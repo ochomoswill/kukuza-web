@@ -4,6 +4,9 @@
   "private": true,
   "homepage": ".",
   "scripts": {
+    "clean": "rm -rf build",
+    "prebuild": "npm run generate-build-version",
+    "generate-build-version": "node generate-build-version",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
@@ -12,11 +15,6 @@
     "eslint": "eslint --ext .js,jsx src",
     "tslint": "tslint \"src/**/*.{ts,tsx}\"",
     "stylelint": "stylelint \"src/**/*.{scss,less}\""
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged"
-    }
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,scss,less}": [

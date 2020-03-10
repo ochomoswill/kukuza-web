@@ -7,6 +7,7 @@ import Loader from 'components/LayoutComponents/Loader'
 import PublicLayout from './Public'
 import LoginLayout from './Login'
 import MainLayout from './Main'
+import CacheBuster from '../CacheBuster'
 
 const Layouts = {
   public: PublicLayout,
@@ -63,7 +64,7 @@ class IndexLayout extends React.PureComponent {
 
     const BootstrappedLayout = () => {
       // show loader when user in check authorization process, not authorized yet and not on login pages
-     /* if (isUserLoading && !isUserAuthorized && !isLoginLayout) {
+      /* if (isUserLoading && !isUserAuthorized && !isLoginLayout) {
         return <Loader />
       }*/
       // redirect to login page if current is not login page and user not authorized
@@ -71,16 +72,35 @@ class IndexLayout extends React.PureComponent {
         return <Redirect to="/user/login" />
       }*/
       // redirect to main dashboard when user on login page and authorized
-     /* if (isLoginLayout && isUserAuthorized) {
+      /* if (isLoginLayout && isUserAuthorized) {
         return <Redirect to="/dashboard/alpha" />
       }*/
       // in other case render previously set layout
-      return <Container title={"Some Title"}>{children}</Container>
+      return (
+        <React.Fragment>
+          <CacheBuster>
+            {({ loading, isLatestVersion, refreshCacheAndReload }) => {
+              if (loading) return null
+              if (!loading && !isLatestVersion) {
+                refreshCacheAndReload()
+              }
+
+              return <Container title={'Some Title'}>{children}</Container>
+            }}
+          </CacheBuster>
+        </React.Fragment>
+      )
+      /*return (
+                <Container title={"Some Title"}>{children}</Container>
+      )*/
     }
 
     return (
       <Fragment>
-        <Helmet titleTemplate="Kukuza Empowerment SACCO LTD | %s" title="React Admin Template" />
+        <Helmet
+          titleTemplate={`${global.appVersion} - Kukuza Empowerment SACCO LTD | %s`}
+          title="React Admin Template"
+        />
         {BootstrappedLayout()}
       </Fragment>
     )
