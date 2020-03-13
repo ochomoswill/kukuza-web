@@ -33,12 +33,12 @@ class ProductCard extends React.Component {
           <div className={styles.like}>
             <i className="icmn-heart" />
           </div>
-          <a href="javascript: void(0);">
+          <a href="#!">
             <img src={productImg} alt="" />
           </a>
         </div>
         <div className={styles.title}>
-          <a href="javascript: void(0);">{productName}</a>
+          <a href="#!">{productName}</a>
           <div className={styles.price}>
             {productPrice}
             <div className={styles.oldPrice}>{productOldPrice}</div>

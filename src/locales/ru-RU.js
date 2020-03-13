@@ -9,6 +9,7 @@ const messages = {
   'topBar.bitcoin': 'Биткоин',
   'topBar.profileMenu.hello': 'Привет',
   'topBar.profileMenu.billingPlan': 'Тарифный план',
+	'topBar.profileMenu.accNo': 'номер счета',
   'topBar.profileMenu.role': 'Роль',
   'topBar.profileMenu.email': 'Емайл',
   'topBar.profileMenu.phone': 'Телефон',

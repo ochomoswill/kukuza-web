@@ -32,7 +32,7 @@ class PricingItem extends React.Component {
           ))}
         </ul>
         <div className={styles.footer}>
-          <a href="javascript: void(0);" className="btn" role="button">
+          <a href="#!" className="btn" role="button">
             <i className="icmn-download mr-3" aria-hidden="true" />
             {data.btnText}
           </a>

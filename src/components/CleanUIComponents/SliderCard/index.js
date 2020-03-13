@@ -13,7 +13,7 @@ class SliderCard extends React.Component {
       <div className={`${styles.card} ${inverse ? styles.inverse : ''}`}>
         <Carousel autoplay>
           <div className={styles.item}>
-            <a href="javascript: void(0);" className={styles.body}>
+            <a href="#!" className={styles.body}>
               <div className={styles.icon}>
                 <i className="icmn-accessibility" />
               </div>
@@ -22,7 +22,7 @@ class SliderCard extends React.Component {
             </a>
           </div>
           <div className={styles.item}>
-            <a href="javascript: void(0);" className={styles.body}>
+            <a href="#!" className={styles.body}>
               <div className={styles.icon}>
                 <i className="icmn-download" />
               </div>

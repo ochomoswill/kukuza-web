@@ -79,5 +79,6 @@ export default {
     fullDateTime,
     fullDate,
     delimitTimeWithHyphens,
-    getCurrentFullDate
+    getCurrentFullDate,
+	formatISOString
 }

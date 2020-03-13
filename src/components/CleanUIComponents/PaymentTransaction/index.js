@@ -26,7 +26,7 @@ class PaymentTransaction extends React.Component {
 
     return (
       <a
-        href="javascript: void(0);"
+        href="#!"
         className={`${styles.paymentTransaction} card card--withShadow ${
           income ? styles.income : ''
         }`}

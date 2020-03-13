@@ -1,155 +1,234 @@
 import React, { Component } from 'react'
-import { Form, Input, Button } from 'antd'
+import { Button, Form, Input, Result } from 'antd'
 import { Helmet } from 'react-helmet'
 import styles from './style.module.scss'
 import Icon from 'antd/es/icon'
 
 import * as authSelectors from 'redux/auth/selectors'
 import * as authActions from 'redux/auth/actions'
-
-import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { Entities } from '../../../redux/constants'
+import { withRouter } from 'react-router'
+import ActionContainer from '../../../redux/ActionContainer'
+import CustomAlert from '../../../components/KukuzaComponents/CustomAlert'
 
 
 const mapStateToProps = state => {
-  console.log('@mapStateToProps', authSelectors.getResetPwdStatus(state))
-  return {
-    resetPwd: authSelectors.getResetPwdStatus(state),
-  }
+	console.log('@mapStateToProps', authSelectors.getResetPwdStatus(state))
+	return {
+		resetPwd: authSelectors.getResetPwdStatus(state),
+	}
 }
 
 const mapDispatchToProps = dispatch => {
-  return {
-    authActions: bindActionCreators(authActions, dispatch),
-  }
+	return {
+		authActions: bindActionCreators(authActions, dispatch),
+	}
 }
 
-@connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)
+// @connect(mapStateToProps, mapDispatchToProps)
 @Form.create()
-class Forgot extends Component {
-  state = {
-    alert: {
-      show: false,
-      message: undefined,
-      description: undefined,
-      type: undefined,
-      closable: false,
-      showIcon: true,
-    },
-    disableAlert: {
-      show: false,
-      message: undefined,
-      description: undefined,
-      type: undefined,
-      closable: false,
-      showIcon: true,
-    },
-    loading: false,
-  }
-
-  handleSubmit = e => {
-    // this.resetAlert();
-    e.preventDefault()
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values)
-
-        if (values.email !== '') {
-          //this.props.authActions.resetPassword(values.email);
-        } else {
-          // this.showAlert("Field Error!", "Email is required!", "error");
-        }
-      }
-    })
-  }
-
-  render() {
-    const { form: { getFieldDecorator } } = this.props
-
-    const { resetPwd } = this.props
-
-    return (
-      <div>
-        <Helmet title="Forgot"/>
-        <div className={`${styles.title} login-heading`}>
-          <h1 className="mb-3 text-white">
-            <strong>Forgot Password</strong>
-          </h1>
-        </div>
-        <div className={styles.block}>
-          <div className="row">
-            <div className="col-xl-12">
-              <div className={styles.inner}>
-                <div className={styles.form}>
-                  <h4>
-                    Forgot your password? Don’t panic!
-                  </h4>
-                  <br/>
-                  <Form onSubmit={this.handleSubmit} className="login-form">
-                    {/*{
-                      alert.show &&
-                      <Alert
-                        message={alert.message}
-                        description={alert.description}
-                        type={alert.type}
-                        closable={false}
-                        showIcon
-                      />
-                    }*/}
+class ForgotPassword extends Component {
+	state = {
+		messageBar: {
+			show: false,
+			type: "info",
+			title: "",
+			description: ""
+		},
+		resetPasswordTracker: false,
+	}
 
 
-                    <Form.Item extra="We'll send password reset link to your email.">
-                      <label className="form-label mb-0">Email Address</label>
-                      {getFieldDecorator('email', {
-                        rules: [{ required: true, message: 'Please input your email address!' }],
-                      })(
-                        <Input
-                          prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }}/>}
-                          placeholder="Email Address"
-                        />,
-                      )}
-                    </Form.Item>
-                    <div className="form-actions">
-                      <Button type="primary" htmlType="submit" className="login-form-button"
-                              loading={resetPwd ? resetPwd.tracker === 'processing' : false}>
-                        Reset Password
-                      </Button>
-                      <span className="ml-3 register-link">
-                        <a href="javascript: void(0);" onClick={() => this.props.history.push('/user/login')}
-                           className="text-primary utils__link--underlined">
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		/* Compare Login Props */
+		if (prevProps.resetPassword !== this.props.resetPassword) {
+			const {tracker, data} = this.props.resetPassword.create;
+
+
+			if (tracker.status === "loading") {
+				this.setState({
+					...this.state,
+					resetPasswordTracker: tracker,
+					messageBar: {
+						show: false,
+						type: "info",
+						title: "",
+						description: ""
+					}
+				})
+
+			}
+			if (tracker.status === "success") {
+				// console.log("auth was a success");
+
+				this.setState({
+					...this.state,
+					resetPasswordTracker: tracker,
+					messageBar: {
+						show: true,
+						type: tracker.status,
+						title: "Password reset was successful.",
+						description: ` A new password has been sent to ${data.emailAddress}`
+					}
+				});
+			}
+
+
+			if (tracker.status === "error") {
+				this.setState({
+					...this.state,
+					resetPasswordTracker: tracker,
+					messageBar: {
+						show: true,
+						type: tracker.status,
+						title: tracker.errors[0].error,
+						description: tracker.errors[0].message
+					}
+				});
+			}
+
+		}
+
+	}
+
+	handleSubmit = e => {
+		// this.resetAlert();
+		e.preventDefault()
+		this.props.form.validateFields((err, values) => {
+			if (!err) {
+				console.log('Received values of form: ', values);
+
+				//this.props.authActions.resetPassword(values.email);
+				const { handleRequest } = this.props
+
+				const reqParams = {
+					getParams: {
+						activePage: this.props.location.pathname,
+						userIdentifier: values.email,
+					},
+				}
+
+				Entities.resetPassword.fnResetPassword(handleRequest, reqParams)
+
+				this.props.form.resetFields();
+
+			}
+		})
+	}
+
+	render() {
+		const { form: { getFieldDecorator } } = this.props
+
+		const { resetPwd } = this.props;
+
+		const {resetPasswordTracker, messageBar} = this.state;
+
+		return (
+			<div>
+				<Helmet title="ForgotPassword"/>
+				<div className={`${styles.title} login-heading`}>
+					<h1 className="mb-3 text-white">
+						<strong>Forgot Password</strong>
+					</h1>
+				</div>
+				<div className={styles.block}>
+					<div className="row">
+						<div className="col-xl-12">
+							<div className={styles.inner}>
+								<div className={styles.form}>
+
+
+
+
+
+									{
+										resetPasswordTracker.status === "success" ? (
+											<Result
+												status={messageBar.type}
+												title={messageBar.title}
+												subTitle={messageBar.description}
+												extra={[
+													<Button
+														type="primary"
+														key="console"
+														onClick={() => this.props.history.push('/user/login')}
+													>
+														Return to Log In
+													</Button>
+												]}
+											/>
+										):(
+											<React.Fragment>
+												<h4>
+													Forgot your password? Don’t panic!
+												</h4>
+												<br/>
+
+												<CustomAlert
+													show={messageBar.show}
+													title={messageBar.title}
+													description={messageBar.description}
+													type={messageBar.type}
+													showIcon={true}
+												/>
+
+												<Form onSubmit={this.handleSubmit} className="login-form">
+													<Form.Item label={"Email Address"} extra="We'll send password reset link to your email.">
+														{getFieldDecorator('email', {
+															rules: [{ required: true, message: 'Please input your email address!', type: 'email' }],
+														})(
+															<Input
+																prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																placeholder="Email Address"
+															/>,
+														)}
+													</Form.Item>
+													<div className="form-actions">
+														<Button
+															type="primary"
+															htmlType="submit"
+															className="login-form-button"
+															loading={resetPasswordTracker.status === 'loading'}>
+															Reset Password
+														</Button>
+														<span className="ml-3 register-link">
+                        <a
+													href="#!" onClick={() => this.props.history.push('/user/login')}
+													 className="text-primary utils__link--underlined">
                           Return to Log In
                         </a>
                       </span>
-                    </div>
-                    {/*<div className="form-group">
-                    <span>Use another service to Log In</span>
-                    <div className="mt-2">
-                        <a href="javascript: void(0);" className="btn btn-icon mr-2">
-                            <i className="icmn-facebook"/>
-                        </a>
-                        <a href="javascript: void(0);" className="btn btn-icon mr-2">
-                            <i className="icmn-google"/>
-                        </a>
-                        <a href="javascript: void(0);" className="btn btn-icon mr-2">
-                            <i className="icmn-windows"/>
-                        </a>
-                        <a href="javascript: void(0);" className="btn btn-icon mr-2">
-                            <i className="icmn-twitter"/>
-                        </a>
-                    </div>
-                </div>*/}
-                  </Form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+													</div>
+												</Form>
+											</React.Fragment>
+										)
+									}
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
 }
 
-export default Forgot
+// export default ForgotPassword
+
+const WrappedForgotForm = withRouter(ForgotPassword);
+
+
+const entityObject = {};
+entityObject[Entities.resetPassword.name] = {
+	create: true,
+};
+
+const ConnectedForgotForm = () => (
+	<ActionContainer entityObject={entityObject}>
+		{(props) => <WrappedForgotForm {...props} />}
+	</ActionContainer>
+);
+
+export default ConnectedForgotForm;

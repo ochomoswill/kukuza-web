@@ -1,6 +1,15 @@
 import * as types from './actionTypes'
 import AuthService from './services'
 import timeUtils from 'utils/datetime'
+import { REVOKE_TOKEN_REQUEST_ERROR } from './actionTypes'
+import { RESET_REVOKE_TOKEN_REQUEST } from './actionTypes'
+import { REVOKE_TOKEN_REQUEST_SUCCESS } from './actionTypes'
+import { REVOKE_TOKEN_REQUESTING } from './actionTypes'
+import { LOGOUT_USER } from './actionTypes'
+import { SET_ACCESS_TOKEN } from './actionTypes'
+import { SET_AUTHENTICATION_STATUS } from './actionTypes'
+import { SET_USER } from './actionTypes'
+import {action} from '../helpers'
 
 // Log In
 export function login(authDetails) {
@@ -114,3 +123,35 @@ export function resetResetPassword() {
         dispatch({type: types.RESET_RESET_PWD});
     }
 }
+
+
+
+
+
+///
+
+// NEW FUNCTIONS
+/* Set Logged In User Details */
+export const setUser = (user) => action(SET_USER, user);
+
+/* Set User's Authentication Status */
+export const setAuthenticationStatus = (isAuthenticated) => action(SET_AUTHENTICATION_STATUS, isAuthenticated);
+
+/* Set User's Access Token */
+export const setAccessToken = (accessToken) => action(SET_ACCESS_TOKEN, accessToken);
+
+/* Logout User */
+export const logoutUser = () => action(LOGOUT_USER);
+
+
+/* Revoke access token */
+export const revokeTokenRequest = () => action(REVOKE_TOKEN_REQUESTING);
+
+export const revokeTokenRequestSuccess = (revokeToken) => action(REVOKE_TOKEN_REQUEST_SUCCESS, revokeToken);
+
+export const revokeTokenRequestError = (error) => action(REVOKE_TOKEN_REQUEST_ERROR, error);
+
+export const resetRevokeTokenRequest = () => action(RESET_REVOKE_TOKEN_REQUEST);
+
+
+

@@ -11,7 +11,7 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">now</span>
-              <a href="javascript: void(0);">
+              <a href="#!">
                 Update Status: <span className="badge badge-danger">New</span>
               </a>
             </div>
@@ -26,7 +26,7 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">24 min ago</span>
-              <a href="javascript: void(0);">
+              <a href="#!">
                 Income: <span className="badge badge-default">$299.00</span>
               </a>
             </div>
@@ -41,10 +41,10 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">30 min ago</span>
-              <a href="javascript: void(0);">Inbox Message</a>
+              <a href="#!">Inbox Message</a>
             </div>
             <div className={styles.descr}>
-              From: <a href="javascript: void(0);">David Bowie</a>
+              From: <a href="#!">David Bowie</a>
             </div>
           </div>
         </Menu.Item>
@@ -53,7 +53,7 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">now</span>
-              <a href="javascript: void(0);">
+              <a href="#!">
                 Update Status: <span className="badge badge-primary">New</span>
               </a>
             </div>
@@ -68,7 +68,7 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">24 min ago</span>
-              <a href="javascript: void(0);">
+              <a href="#!">
                 Income: <span className="badge badge-warning">$299.00</span>
               </a>
             </div>
@@ -83,10 +83,10 @@ class HomeMenu extends React.Component {
           <div className={styles.inner}>
             <div className={styles.title}>
               <span className="pull-right">30 min ago</span>
-              <a href="javascript: void(0);">Inbox Message</a>
+              <a href="#!">Inbox Message</a>
             </div>
             <div className={styles.descr}>
-              From: <a href="javascript: void(0);">David Bowie</a>
+              From: <a href="#!">David Bowie</a>
             </div>
           </div>
         </Menu.Item>

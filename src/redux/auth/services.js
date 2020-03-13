@@ -1,4 +1,6 @@
-import globalVariables from '../../utils/global'
+import globalVariables, { getAuthToken } from '../../utils/global'
+import axios from "axios"
+import { API_URL } from '../../constants/General'
 
 export default class AuthService {
     static async getAccessToken(userCredentials) {
@@ -163,3 +165,43 @@ export default class AuthService {
             })
     }
 }
+
+
+///
+// NEW SERVICES
+export async function refreshAccessToken() {
+	const url = `${API_URL}/o/refresh?activePage=/`;
+
+	// console.log("Here be the url ", url);
+
+	const requestConfig = {
+		method: "POST",
+		url,
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: getAuthToken()
+		}
+	};
+
+	return await axios(requestConfig);
+}
+
+
+export async function revokeAccessToken() {
+	const url = `${API_URL}/o/revoke?activePage=/`;
+
+	// console.log("Here be the url ", url);
+
+	const requestConfig = {
+		method: "DELETE",
+		url,
+		headers: {
+			Authorization: getAuthToken()
+		}
+	};
+
+	return await axios(requestConfig);
+}
+
+

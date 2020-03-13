@@ -88,3 +88,8 @@ export const computeReducer = (state, action) => {
 
     return state;
 };
+
+
+export const action = (type, payload = undefined) => {
+	return {type, payload}
+}

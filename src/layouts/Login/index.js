@@ -12,6 +12,12 @@ class LoginLayout extends React.PureComponent {
     backgroundEnabled: false,
   }
 
+
+  isLinkActive = (refUrl) => {
+  	// console.log("Current url ", this.props.location.pathname);
+  	return refUrl === this.props.location.pathname;
+	}
+
   render() {
     const { children } = this.props
 
@@ -24,7 +30,7 @@ class LoginLayout extends React.PureComponent {
           >
             <div className={styles.header}>
               <div className={styles.logo}>
-                <a href="javascript: void(0);">
+                <a href="#!">
                   <img
                     src={KukuzaWhiteLogo}
                     alt="Kukuza Investment Group Portal"
@@ -49,12 +55,20 @@ class LoginLayout extends React.PureComponent {
                     <a href="https://kukuza.co.ke">&larr; Website</a>
                   </li>
                   <li>
-                    <a className={styles.navigationActive} href="javascript: void(0);" onClick={() => this.props.history.push("/login")}>
+                    <a
+											className={this.isLinkActive("/user/login") ? styles.navigationActive: undefined}
+											href="#!"
+											onClick={() => this.props.history.push("/user/login")}>
                       Log In
                     </a>
                   </li>
                   <li>
-                    <a href="javascript: void(0);" onClick={() => this.props.history.push("/signup")}>Apply Now</a>
+                    <a
+											className={this.isLinkActive("/user/signup") ? styles.navigationActive: undefined}
+											href="#!"
+											onClick={() => this.props.history.push("/user/signup")}>
+											Apply Now
+                    </a>
                   </li>
                 </ul>
               </nav>
@@ -63,19 +77,19 @@ class LoginLayout extends React.PureComponent {
             {/*<div className={`${styles.footer} text-center`}>
               <ul className="list-unstyled list-inline mb-3">
                 <li className="list-inline-item">
-                  <a href="javascript: void(0);">Terms of Use</a>
+                  <a href="#!">Terms of Use</a>
                 </li>
                 <li className="active list-inline-item">
-                  <a href="javascript: void(0);">Compliance</a>
+                  <a href="#!">Compliance</a>
                 </li>
                 <li className="list-inline-item">
-                  <a href="javascript: void(0);">Confidential Information</a>
+                  <a href="#!">Confidential Information</a>
                 </li>
                 <li className="list-inline-item">
-                  <a href="javascript: void(0);">Support</a>
+                  <a href="#!">Support</a>
                 </li>
                 <li className="list-inline-item">
-                  <a href="javascript: void(0);">Contacts</a>
+                  <a href="#!">Contacts</a>
                 </li>
               </ul>
               <p>&copy; 2019 Mediatec. All rights reserved.</p>
@@ -87,4 +101,4 @@ class LoginLayout extends React.PureComponent {
   }
 }
 
-export default withRouter(LoginLayout)
+export default LoginLayout;

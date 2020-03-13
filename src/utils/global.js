@@ -1,30 +1,90 @@
 import HttpClient from '../utils/httpClient'
-
+import { getSecureStorageItem, hasSecureStorageItem } from './SecureLocalStorage'
+import { AUTH_DETAILS_LOCAL_STORAGE_KEY, LOG_IN_TIME_LOCAL_STORAGE_KEY } from '../constants/General'
+import {store} from "../index"
+import { revokeTokenRequest } from '../redux/auth/actions'
 const AppEndpoint = 'https://api.kukuza.co.ke';
 const host = 'https://portal.kukuza.co.ke';
 
 const client = new HttpClient(AppEndpoint);
 
+/* Session Data */
+export const sessionTime = getSessionTime() ? getSessionTime() :3600; // TODO :: Pick the value from the API
+export const sessionTimeUnit = getSessionTimeUnit() ? getSessionTimeUnit() === "seconds" ? 's' : 's' : 's';
+export const expiryAllowance = 300; // 5 minutes
+export const si_unit = "minutes";
+
 export function makeRequest(method, url, config, withAuth = false) {
     return client.makeRequest(method, url, config, withAuth)
 }
 
-function getAuthToken() {
-    if (localStorage.getItem('app.Authorization')) {
-        //console.log(JSON.parse(sessionStorage.getItem("evrAccessToken")));
-        return JSON.parse(localStorage.getItem('app.Authorization')).accessToken
-    } else {
-        return undefined
-    }
+
+export function getSessionTime() {
+	if (hasSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)) {
+		return JSON.parse(getSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)).expiry;
+	} else {
+		return undefined
+	}
 }
 
-function getUserDetails() {
-    if (localStorage.getItem('app.Authorization')) {
-        return JSON.parse(localStorage.getItem('app.Authorization'))
-    } else {
-        return undefined
-    }
+export function getSessionTimeUnit() {
+	if (hasSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)) {
+		return JSON.parse(getSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)).timeUnit;
+	} else {
+		return undefined
+	}
 }
+
+export function getAuthToken() {
+	if (hasSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)) {
+		return JSON.parse(getSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)).accessToken
+	} else {
+		return undefined
+	}
+}
+
+export function getUserDetails() {
+	if (hasSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)) {
+		return JSON.parse(getSecureStorageItem(AUTH_DETAILS_LOCAL_STORAGE_KEY)).user
+	} else {
+		return undefined
+	}
+}
+
+export function getLogInTime() {
+	if (hasSecureStorageItem(LOG_IN_TIME_LOCAL_STORAGE_KEY)) {
+		return JSON.parse(getSecureStorageItem(LOG_IN_TIME_LOCAL_STORAGE_KEY))
+	} else {
+		return undefined
+	}
+}
+
+
+export function logout() {
+
+	// Was a good idea till we found out about Tracking URL
+	// saveToLocalStorage(store.getState().router.location.pathname, General.LAST_URL_ENTRY_LOCAL_STORAGE_KEY);
+
+	// store.dispatch(logoutUser());
+
+	store.dispatch(revokeTokenRequest())
+
+	// clearLocalStorageOnLogout();
+
+
+}
+
+
+export function clearLocalStorageOnLogout() {
+	if (localStorage.hasOwnProperty(AUTH_DETAILS_LOCAL_STORAGE_KEY)) {
+		localStorage.removeItem(AUTH_DETAILS_LOCAL_STORAGE_KEY);
+	}
+
+	if (localStorage.hasOwnProperty(LOG_IN_TIME_LOCAL_STORAGE_KEY)) {
+		localStorage.removeItem(LOG_IN_TIME_LOCAL_STORAGE_KEY);
+	}
+}
+
 
 function secureFetch(url, request) {
     return new Promise((resolve, reject) => {
@@ -66,10 +126,7 @@ function secureFetch(url, request) {
     })
 }
 
-function logout() {
-    window.localStorage.setItem('app.Authorization', '');
-    window.localStorage.setItem('app.Role', '')
-}
+
 
 export default {
     AppEndpoint,

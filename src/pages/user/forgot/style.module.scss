@@ -43,7 +43,11 @@
   position: relative;
 
   @media (max-width: $md-max-width) {
-    padding: rem(40) rem(20) rem(80);
+    // padding: rem(40) rem(20) rem(80);
+
+	  padding: rem(40) rem(30) rem(25);
+	  // padding: 40px 25px 20px;
+	  margin-bottom: 0;
   }
 }
 

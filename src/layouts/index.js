@@ -8,6 +8,7 @@ import PublicLayout from './Public'
 import LoginLayout from './Login'
 import MainLayout from './Main'
 import CacheBuster from '../CacheBuster'
+import { getAuthToken, getSessionTime, getSessionTimeUnit, getUserDetails } from '../utils/global'
 
 const Layouts = {
   public: PublicLayout,
@@ -58,23 +59,30 @@ class IndexLayout extends React.PureComponent {
     }
 
     const Container = Layouts[getLayout()]
-    const isUserAuthorized = user.authorized
-    const isUserLoading = user.loading
+    // const isUserAuthorized = user.authorized
+    const isUserAuthorized = !!getAuthToken()
+    // const isUserLoading = user.loading
     const isLoginLayout = getLayout() === 'login'
 
     const BootstrappedLayout = () => {
+
+    	console.log("@isUserAuthorized ", isUserAuthorized);
+    	console.log("@getAuthToken", getAuthToken());
+    	console.log("@getUserDetails", getUserDetails());
+    	console.log("@getSessionTime", getSessionTime());
+    	console.log("@getSessionTimeUnit", getSessionTimeUnit());
       // show loader when user in check authorization process, not authorized yet and not on login pages
       /* if (isUserLoading && !isUserAuthorized && !isLoginLayout) {
         return <Loader />
       }*/
       // redirect to login page if current is not login page and user not authorized
-      /*if (!isLoginLayout && !isUserAuthorized) {
+      if (!isLoginLayout && !isUserAuthorized) {
         return <Redirect to="/user/login" />
-      }*/
+      }
       // redirect to main dashboard when user on login page and authorized
-      /* if (isLoginLayout && isUserAuthorized) {
+			if (isLoginLayout && isUserAuthorized) {
         return <Redirect to="/dashboard/alpha" />
-      }*/
+      }
       // in other case render previously set layout
       return (
         <React.Fragment>
@@ -98,7 +106,7 @@ class IndexLayout extends React.PureComponent {
     return (
       <Fragment>
         <Helmet
-          titleTemplate={`${global.appVersion} - Kukuza Empowerment SACCO LTD | %s`}
+          titleTemplate={`${global.appVersion} - ${process.env.REACT_APP_TITLE} | %s`}
           title="React Admin Template"
         />
         {BootstrappedLayout()}

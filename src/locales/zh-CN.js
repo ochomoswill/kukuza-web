@@ -8,6 +8,7 @@ const messages = {
   'topBar.bitcoin': '比特币',
   'topBar.profileMenu.hello': '你好',
   'topBar.profileMenu.billingPlan': '结算计划',
+	'topBar.profileMenu.accNo': '帐号',
   'topBar.profileMenu.role': '角色',
   'topBar.profileMenu.email': '电子邮件',
   'topBar.profileMenu.phone': '电话',
