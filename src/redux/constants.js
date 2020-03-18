@@ -41,6 +41,58 @@ export const Entities = {
 
 			fnHandleRequest(options);
 		}
+	},
+	myTransactions: {
+		url: "me/transactions",
+		name: "myTransactions",
+		fnGetMyTransaction: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myTransactions;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetMyTransactions: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myTransactions;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
+	myWallets: {
+		url: "me/wallets",
+		name: "myWallets",
+		fnGetMyWallet: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myWallets;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetMyWallets: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myWallets;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
 	}
 }
 

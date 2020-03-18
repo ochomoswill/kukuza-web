@@ -1,4 +1,4 @@
-import globalVariables, { getAuthToken } from '../../utils/global'
+import globalVariables, { getAuthToken } from '../../utils/Session'
 import axios from "axios"
 import { API_URL } from '../../constants/General'
 
@@ -169,7 +169,7 @@ export default class AuthService {
 
 ///
 // NEW SERVICES
-export async function refreshAccessToken() {
+export async function refreshAccessToken(accessToken) {
 	const url = `${API_URL}/o/refresh?activePage=/`;
 
 	// console.log("Here be the url ", url);
@@ -180,7 +180,7 @@ export async function refreshAccessToken() {
 		headers: {
 			"Content-Type": "application/json",
 			Accept: "application/json",
-			Authorization: getAuthToken()
+			Authorization: accessToken
 		}
 	};
 

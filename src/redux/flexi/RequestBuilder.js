@@ -196,6 +196,15 @@ export class HandleRequestOptsDirector {
 		return this;
 	};
 
+	readMany(entity, reqParams) {
+		this.builder = this.builder
+			.withType("read", true)
+			.withReqParams(reqParams)
+			.withEntity(entity);
+
+		return this;
+	};
+
 	delete(entity, reqParams) {
 
 		this.builder = this.builder

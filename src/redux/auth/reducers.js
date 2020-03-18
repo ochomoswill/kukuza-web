@@ -8,7 +8,7 @@ import { REVOKE_TOKEN_REQUESTING } from './actionTypes'
 import { REVOKE_TOKEN_REQUEST_SUCCESS } from './actionTypes'
 import { REVOKE_TOKEN_REQUEST_ERROR } from './actionTypes'
 import { RESET_REVOKE_TOKEN_REQUEST } from './actionTypes'
-import { clearLocalStorageOnLogout, getAuthToken, getUserDetails } from '../../utils/global'
+import { clearLocalStorageOnLogout, getAuthToken, getUserDetails } from '../../utils/Session'
 
 
 

@@ -1,4 +1,4 @@
-import globalVariables from '../../utils/global'
+import globalVariables from '../../utils/Session'
 
 export default class WalletsService {
     // Get my wallet

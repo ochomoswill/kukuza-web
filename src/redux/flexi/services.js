@@ -1,4 +1,4 @@
-import { makeRequest } from '../../utils/global'
+import { makeRequest } from '../../utils/HttpClient'
 
 export const APIRequestMethod =  {
     "GET" : "GET",

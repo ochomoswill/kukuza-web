@@ -9,7 +9,7 @@ import { FormattedMessage } from 'react-intl'
 import styles from './style.module.scss';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { logoutUser } from '../../../../redux/auth/actions'
-import { logout } from '../../../../utils/global'
+import { logout } from '../../../../utils/Session'
 
 
 const { confirm } = Modal;

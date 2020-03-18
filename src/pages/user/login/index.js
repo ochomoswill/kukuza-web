@@ -41,12 +41,6 @@ class Login extends Component {
 		saveToLocalStorage(authDetails, AUTH_DETAILS_LOCAL_STORAGE_KEY);
 	}
 
-	static setLoginTime() {
-		//localStorage.setItem(General.LOG_IN_TIME_LOCAL_STORAGE_KEY, JSON.stringify(timeUtils.CurrentDateTime()));
-
-		saveToLocalStorage(timeUtils.CurrentDateTime(), LOG_IN_TIME_LOCAL_STORAGE_KEY);
-	}
-
   onSubmit = event => {
     event.preventDefault()
     const { form } = this.props
@@ -129,8 +123,6 @@ class Login extends Component {
 				const {accessToken, user} = data;
 
 				Login.setAuthDetails(data);
-
-				Login.setLoginTime();
 
 
 				this.props.authActions.setAccessToken(accessToken);

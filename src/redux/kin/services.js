@@ -1,4 +1,4 @@
-import globalVariables from '../../utils/global'
+import globalVariables from '../../utils/Session'
 
 export default class KinService {
     static getAllMyKins(pageSize, pageNumber, filterObj) {

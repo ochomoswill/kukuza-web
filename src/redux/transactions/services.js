@@ -1,4 +1,4 @@
-import globalVariables from '../../utils/global'
+import globalVariables from '../../utils/Session'
 
 export default class TransactionsService {
     static getAllTransactions(pageSize, pageNumber, filterObj) {

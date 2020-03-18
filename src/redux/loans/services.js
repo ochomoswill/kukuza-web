@@ -1,4 +1,4 @@
-import globalVariables from '../../utils/global'
+import globalVariables from '../../utils/Session'
 import timeUtils from '../../utils/datetime'
 
 export default class LoansService {

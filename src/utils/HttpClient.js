@@ -1,10 +1,15 @@
 import axios from 'axios';
-import globalVariables from '../utils/global'
-import { expiryAllowance, getAuthToken, getLogInTime, logout, sessionTime, sessionTimeUnit, si_unit } from './global'
+import { getSessionTimeToLive, getSessionTimeUnit } from './Session'
+import { getAuthToken, getLogInTime, logout } from './Session'
 import timeUtils from './datetime'
 import { refreshAccessToken } from '../redux/auth/services'
 import { saveToLocalStorage } from '../redux/localStorage'
-import { AUTH_DETAILS_LOCAL_STORAGE_KEY, LOG_IN_TIME_LOCAL_STORAGE_KEY } from '../constants/General'
+import {
+	API_URL,
+	AUTH_DETAILS_LOCAL_STORAGE_KEY,
+	EXPIRY_ALLOWANCE, EXPIRY_ALLOWANCE_SI_UNIT,
+	LOG_IN_TIME_LOCAL_STORAGE_KEY,
+} from '../constants/General'
 import { setAccessToken } from '../redux/auth/actions'
 import moment from "moment"
 
@@ -70,23 +75,29 @@ export default class HttpClient {
 
     // Add a request interceptor.
     static async addRequestInterceptor(client) {
-        client.interceptors.request.use(function (config) {
-            // The process before sending the request.
-            //const token = localStorage.getItem("token");
-            let token = getAuthToken();
+        client.interceptors.request.use(async function(config) {
+					// The process before sending the request.
+					//const token = localStorage.getItem("token");
+					let token = getAuthToken();
 
-            if (token != null) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
+					if (token != null) {
+						config.headers.Authorization = `Bearer ${token}`;
+					}
 
 					const currentDateTime = timeUtils.CurrentDateTime();
 					// httpClientLogger.customInfo("addRequestInterceptor()", "Current time is                   : " + timeUtils.formatDateTime(currentDateTime));
 
 
 					// let sessionStartTime = '2019-4-9 19:10:23';
-					const sessionStartTime = getLogInTime();
+					const sessionStartTime = timeUtils.formatUSDateTime(getLogInTime());
 
-					if (getLogInTime() !== undefined) {
+					if (sessionStartTime !== undefined) {
+						const expiryAllowance = EXPIRY_ALLOWANCE;
+
+						const si_unit = EXPIRY_ALLOWANCE_SI_UNIT;
+
+						const sessionTime = getSessionTimeToLive();
+						const sessionTimeUnit = getSessionTimeUnit() ? getSessionTimeUnit() === "seconds" ? 's' : 's' : 's';
 						const expiryDateTime = moment(timeUtils.formatISOString(sessionStartTime)).add(sessionTime, sessionTimeUnit);
 
 						const lowerLimitExpiryDate = moment(timeUtils.formatISOString(sessionStartTime)).add(sessionTime - expiryAllowance, sessionTimeUnit);
@@ -94,35 +105,34 @@ export default class HttpClient {
 						const diff = moment().diff(moment(timeUtils.formatISOString(lowerLimitExpiryDate), moment.ISO_8601), si_unit);
 
 
-						if (diff < 0) {
-							// httpClientLogger.customInfo("addRequestInterceptor()", "The Refresh Token threshold not reached!");
-						} else if (diff >= 1) {
-							// httpClientLogger.customInfo("addRequestInterceptor()", "The Access Token expired!");
-							// actions.userSignOutSuccess();
-							//store.dispatch(setAuthenticationStatus(false));
+						const expiryAllowanceInMinutes = expiryAllowance / 60;
 
-							//store.dispatch(logoutUser());
-							logout();
+						const logoutThreshold = expiryAllowanceInMinutes - 1;
 
-						} else if (diff < 1) {
+
+						if (diff >= 0 && diff < logoutThreshold) {
 							// httpClientLogger.customInfo("addRequestInterceptor()", "The Access Token has an allowable time. Kindly refresh token!");
 
-							// store.dispatch(actions.refreshTokenRequest());
-							// store.dispatch(actions.resetRefreshTokenRequest());
+							// refreshing the token
+							// console.log("@oldConfig ", config);
+							// console.log("@newConfig ", newConfig);
+							// return HttpClient.updateConfigWithAccessToken(config);
+							return await HttpClient.updateConfigWithAccessToken(config);
 
-							HttpClient.updateConfigWithAccessToken(config);
+						} else if (diff >= logoutThreshold) {
+							// httpClientLogger.customInfo("addRequestInterceptor()", "The Access Token expired!");
 
-						} else {
-							// httpClientLogger.customInfo("addRequestInterceptor()", "The Access Token just expired!")
+							// Logout User
+							logout();
 						}
 					}
 
-            // check if token has expired
+					// check if token has expired
 
-            // refresh token if the token has expired
+					// refresh token if the token has expired
 
-            return config;
-        }, function (error) {
+					return config;
+				}, function (error) {
             // Request error handling.
             return Promise.reject(error);
         });
@@ -155,59 +165,59 @@ export default class HttpClient {
     }
 
     // Make requests
-    makeRequest(method, url, config = {
-        data: {}, headers: {}, params: {}, onUploadProgress: function (progressEvent) {
-        }
-    }, withAuth = false) {
-        let client = this._axios;
+    async makeRequest(method, url, config = {
+			data: {}, headers: {}, params: {}, onUploadProgress: function(progressEvent) {
+			}
+		}, withAuth = false) {
+			let client = this._axios;
 
-        let requestConfig = {
-            method: method,
-            url: url,
-            data: config.data,
-            headers: config.headers,
-            params: config.params,
-            paramsSerializer: params => {
-                return qs.stringify(params)
-            },
-            onUploadProgress: config.onUploadProgress
-        };
+			let requestConfig = {
+				method: method,
+				url: url,
+				data: config.data,
+				headers: config.headers,
+				params: config.params,
+				paramsSerializer: params => {
+					return qs.stringify(params)
+				},
+				onUploadProgress: config.onUploadProgress
+			};
 
-        if (withAuth) {
-            client = HttpClient.addRequestInterceptor(client)
-        }
+			if (withAuth) {
+				client = await HttpClient.addRequestInterceptor(client)
+			}
 
-        return new Promise((resolve, reject) => {
-            client(requestConfig)
-                .then(response => {
-                    HttpClient.printResponse(response);
-                    resolve(response);
-                })
-                .catch(error => {
-                    if (error.response) {
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx
-                        HttpClient.printResponse(error.response);
-                        resolve(error.response);
-                    } else if (error.request) {
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js
-                        console.log("Request ", error.request);
-                        reject(error);
-                    } else {
-                        // Something happened in setting up the request that triggered an Error
-                        console.log('Error', error.message);
-                        reject(error);
-                    }
-                });
-        });
-    }
+			return new Promise((resolve, reject) => {
+				client(requestConfig)
+					.then(response => {
+						HttpClient.printResponse(response);
+						resolve(response);
+					})
+					.catch(error => {
+						if (error.response) {
+							// The request was made and the server responded with a status code
+							// that falls out of the range of 2xx
+							HttpClient.printResponse(error.response);
+							resolve(error.response);
+						} else if (error.request) {
+							// The request was made but no response was received
+							// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+							// http.ClientRequest in node.js
+							console.log("Request ", error.request);
+							reject(error);
+						} else {
+							// Something happened in setting up the request that triggered an Error
+							console.log('Error', error.message);
+							reject(error);
+						}
+					});
+			});
+		}
 
 
 	 static async updateConfigWithAccessToken(config) {
 		try {
-			const response = await refreshAccessToken();
+			const response = await refreshAccessToken(config.headers.Authorization);
 
 			if (response.hasOwnProperty("status")) {
 				if (response.status === 200) {
@@ -215,7 +225,7 @@ export default class HttpClient {
 
 						// console.log("@data ", response.data);
 
-						const {accessToken} = response.data;
+						const {accessToken, expiry, timeUnit, dateCreated } = response.data;
 
 						let newAuthDetails = response.data;
 
@@ -224,19 +234,29 @@ export default class HttpClient {
 						config.headers.Authorization = `${accessToken}`;
 
 						newAuthDetails["user"] = store.getState().authReducer.user;
+						newAuthDetails["accessToken"] = accessToken;
+						newAuthDetails["timeToLive"] = expiry;
+						newAuthDetails["timeUnit"] = timeUnit;
+						newAuthDetails["dateCreated"] = dateCreated;
 
 						// set auth details dispatch
 						saveToLocalStorage(newAuthDetails, AUTH_DETAILS_LOCAL_STORAGE_KEY);
 
 						// reset log in time dispatch
-						saveToLocalStorage(timeUtils.CurrentDateTime(), LOG_IN_TIME_LOCAL_STORAGE_KEY);
+						// saveToLocalStorage(timeUtils.CurrentDateTime(), LOG_IN_TIME_LOCAL_STORAGE_KEY);
 
 						// update access token
 						store.dispatch(setAccessToken(accessToken));
 
 						return config;
+					}else{
+						console.error("updateConfigWithAccessToken () [Response has no property data]") // todo throw console.error
 					}
+				}else{
+					console.error("updateConfigWithAccessToken () [Response Status is not 200]")
 				}
+			}else{
+				console.error("updateConfigWithAccessToken () [Response has no property status]")
 			}
 		} catch (e) {
 			if (e.response) {
@@ -244,14 +264,21 @@ export default class HttpClient {
 				// that falls out of the range of 2xx
 				// console.log("Response Status ", e.response.status);
 				// console.log("Err Msg ", e.response.data.error);
+				if(e.response.status === 403){
+					logout();
+				}
+
+				console.error("updateConfigWithAccessToken () [Response error]", e.response.data.error)
 			} else if (e.request) {
 				// The request was made but no response was received
 				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
 				// http.ClientRequest in node.js
 				// console.log("Err Msg ", "No Internet Connection!");
+				console.error("updateConfigWithAccessToken () [Response error]", "No Internet Connection!");
 			} else {
 				// Something happened in setting up the request that triggered an Error
 				// console.log("Err Msg ", "Unknown Error!");
+				console.error("updateConfigWithAccessToken () [Response error]", "Unknown Error!", e);
 			}
 		}
 
@@ -262,6 +289,13 @@ export default class HttpClient {
     // Cancel HTTP Request still pending
     // ...
 
+}
+
+
+const apiClient = new HttpClient(API_URL);
+
+export async function makeRequest(method, url, config, withAuth = false) {
+	return await apiClient.makeRequest(method, url, config, withAuth);
 }
 
 /*

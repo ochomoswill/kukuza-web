@@ -1,4 +1,4 @@
-import globalVariables from '../../utils/global'
+import globalVariables from '../../utils/Session'
 
 export default class IntegrationService {
     static confirmPayment(paymentType = 'FIRST TIME REGISTRATION', accountNo) {

@@ -8,7 +8,8 @@ import PublicLayout from './Public'
 import LoginLayout from './Login'
 import MainLayout from './Main'
 import CacheBuster from '../CacheBuster'
-import { getAuthToken, getSessionTime, getSessionTimeUnit, getUserDetails } from '../utils/global'
+import { getAuthToken, getLogInTime, getSessionTimeToLive, getSessionTimeUnit, getUserDetails } from '../utils/Session'
+import timeUtils from '../utils/datetime'
 
 const Layouts = {
   public: PublicLayout,
@@ -69,8 +70,9 @@ class IndexLayout extends React.PureComponent {
     	console.log("@isUserAuthorized ", isUserAuthorized);
     	console.log("@getAuthToken", getAuthToken());
     	console.log("@getUserDetails", getUserDetails());
-    	console.log("@getSessionTime", getSessionTime());
+    	console.log("@getSessionTimeToLive", getSessionTimeToLive());
     	console.log("@getSessionTimeUnit", getSessionTimeUnit());
+    	console.log("@getLogInTime", timeUtils.formatDateTime(getLogInTime()));
       // show loader when user in check authorization process, not authorized yet and not on login pages
       /* if (isUserLoading && !isUserAuthorized && !isLoginLayout) {
         return <Loader />
