@@ -1,0 +1,14 @@
+@import 'assets/styles/mixins.scss';
+
+.contributionsTable {
+	:global(.ant-table table){
+		border-radius: 2px;
+		border-collapse: collapse;
+	}
+}
+
+.periodSelector{
+	@media (max-width: 768px) {
+		padding-bottom: 10px;
+	}
+}

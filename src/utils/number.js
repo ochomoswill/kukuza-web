@@ -7,8 +7,21 @@ function numberWithCommas(x) {
     }
 }
 
+/**
+ * @return {string}
+ */
+function NumberToKES (x) {
+	if (x !== undefined) {
+		let parts = (x.toFixed(2)).toString().split('.');
+		//let parts = x.toString().split('.');
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		return `KES ${parts.join('.')}`
+	}
+}
+
 
 
 export default {
     numberWithCommas,
+	NumberToKES
 }

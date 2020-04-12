@@ -58,7 +58,12 @@ class LoginLayout extends React.PureComponent {
                     <a
 											className={this.isLinkActive("/user/login") ? styles.navigationActive: undefined}
 											href="#!"
-											onClick={() => this.props.history.push("/user/login")}>
+											onClick={
+												(ev) => {
+													ev.preventDefault();
+													this.props.history.push("/user/login")}
+												}
+										>
                       Log In
                     </a>
                   </li>
@@ -66,7 +71,10 @@ class LoginLayout extends React.PureComponent {
                     <a
 											className={this.isLinkActive("/user/signup") ? styles.navigationActive: undefined}
 											href="#!"
-											onClick={() => this.props.history.push("/user/signup")}>
+											onClick={(ev) => {
+												ev.preventDefault();
+												this.props.history.push("/user/signup")}
+											}>
 											Apply Now
                     </a>
                   </li>

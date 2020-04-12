@@ -32,9 +32,9 @@ class ForgotPassword extends Component {
 	state = {
 		messageBar: {
 			show: false,
-			type: "info",
-			title: "",
-			description: ""
+			type: 'info',
+			title: '',
+			description: '',
 		},
 		resetPasswordTracker: false,
 	}
@@ -43,23 +43,23 @@ class ForgotPassword extends Component {
 	componentDidUpdate(prevProps, prevState, snapshot) {
 		/* Compare Login Props */
 		if (prevProps.resetPassword !== this.props.resetPassword) {
-			const {tracker, data} = this.props.resetPassword.create;
+			const { tracker, data } = this.props.resetPassword.create
 
 
-			if (tracker.status === "loading") {
+			if (tracker.status === 'loading') {
 				this.setState({
 					...this.state,
 					resetPasswordTracker: tracker,
 					messageBar: {
 						show: false,
-						type: "info",
-						title: "",
-						description: ""
-					}
+						type: 'info',
+						title: '',
+						description: '',
+					},
 				})
 
 			}
-			if (tracker.status === "success") {
+			if (tracker.status === 'success') {
 				// console.log("auth was a success");
 
 				this.setState({
@@ -68,14 +68,14 @@ class ForgotPassword extends Component {
 					messageBar: {
 						show: true,
 						type: tracker.status,
-						title: "Password reset was successful.",
-						description: ` A new password has been sent to ${data.emailAddress}`
-					}
-				});
+						title: 'Password reset was successful.',
+						description: ` A new password has been sent to ${data.emailAddress}`,
+					},
+				})
 			}
 
 
-			if (tracker.status === "error") {
+			if (tracker.status === 'error') {
 				this.setState({
 					...this.state,
 					resetPasswordTracker: tracker,
@@ -83,9 +83,9 @@ class ForgotPassword extends Component {
 						show: true,
 						type: tracker.status,
 						title: tracker.errors[0].error,
-						description: tracker.errors[0].message
-					}
-				});
+						description: tracker.errors[0].message,
+					},
+				})
 			}
 
 		}
@@ -97,7 +97,7 @@ class ForgotPassword extends Component {
 		e.preventDefault()
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				console.log('Received values of form: ', values);
+				console.log('Received values of form: ', values)
 
 				//this.props.authActions.resetPassword(values.email);
 				const { handleRequest } = this.props
@@ -111,7 +111,7 @@ class ForgotPassword extends Component {
 
 				Entities.resetPassword.fnResetPassword(handleRequest, reqParams)
 
-				this.props.form.resetFields();
+				this.props.form.resetFields()
 
 			}
 		})
@@ -120,9 +120,9 @@ class ForgotPassword extends Component {
 	render() {
 		const { form: { getFieldDecorator } } = this.props
 
-		const { resetPwd } = this.props;
+		const { resetPwd } = this.props
 
-		const {resetPasswordTracker, messageBar} = this.state;
+		const { resetPasswordTracker, messageBar } = this.state
 
 		return (
 			<div>
@@ -139,11 +139,8 @@ class ForgotPassword extends Component {
 								<div className={styles.form}>
 
 
-
-
-
 									{
-										resetPasswordTracker.status === "success" ? (
+										resetPasswordTracker.status === 'success' ? (
 											<Result
 												status={messageBar.type}
 												title={messageBar.title}
@@ -155,10 +152,10 @@ class ForgotPassword extends Component {
 														onClick={() => this.props.history.push('/user/login')}
 													>
 														Return to Log In
-													</Button>
+													</Button>,
 												]}
 											/>
-										):(
+										) : (
 											<React.Fragment>
 												<h4>
 													Forgot your password? Don’t panic!
@@ -174,7 +171,7 @@ class ForgotPassword extends Component {
 												/>
 
 												<Form onSubmit={this.handleSubmit} className="login-form">
-													<Form.Item label={"Email Address"} extra="We'll send password reset link to your email.">
+													<Form.Item label={'Email Address'} extra="We'll send password reset link to your email.">
 														{getFieldDecorator('email', {
 															rules: [{ required: true, message: 'Please input your email address!', type: 'email' }],
 														})(
@@ -194,8 +191,11 @@ class ForgotPassword extends Component {
 														</Button>
 														<span className="ml-3 register-link">
                         <a
-													href="#!" onClick={() => this.props.history.push('/user/login')}
-													 className="text-primary utils__link--underlined">
+													href="#!" onClick={(ev) => {
+													ev.preventDefault()
+													this.props.history.push('/user/login')
+												}}
+													className="text-primary utils__link--underlined">
                           Return to Log In
                         </a>
                       </span>
@@ -217,18 +217,18 @@ class ForgotPassword extends Component {
 
 // export default ForgotPassword
 
-const WrappedForgotForm = withRouter(ForgotPassword);
+const WrappedForgotForm = withRouter(ForgotPassword)
 
 
-const entityObject = {};
+const entityObject = {}
 entityObject[Entities.resetPassword.name] = {
 	create: true,
-};
+}
 
 const ConnectedForgotForm = () => (
 	<ActionContainer entityObject={entityObject}>
 		{(props) => <WrappedForgotForm {...props} />}
 	</ActionContainer>
-);
+)
 
-export default ConnectedForgotForm;
+export default ConnectedForgotForm

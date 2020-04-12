@@ -16,6 +16,7 @@ import timeUtils from '../../../utils/datetime'
 class DashboardAlpha extends React.Component {
 	state = {
 		myTransactions: undefined,
+		myTransactionsTracker: undefined,
 		myWallets: undefined,
 		pageSize: 10,
 		pageNumber: 1,
@@ -94,16 +95,10 @@ class DashboardAlpha extends React.Component {
 
 
 				if (tracker.status === 'loading') {
-					/*this.setState({
-            ...this.state,
-            loginTracker: tracker,
-            messageBar: {
-              show: false,
-              type: "info",
-              title: "",
-              description: ""
-            }
-          })*/
+					this.setState({
+						...this.state,
+						myTransactionsTracker: tracker,
+					})
 
 				}
 				if (tracker.status === 'success') {
@@ -111,21 +106,16 @@ class DashboardAlpha extends React.Component {
 					this.setState({
 						...this.state,
 						myTransactions: data,
+						myTransactionsTracker: tracker,
 					})
 				}
 
 
 				if (tracker.status === 'error') {
-					/*this.setState({
-            ...this.state,
-            loginTracker: tracker,
-            messageBar: {
-              show: true,
-              type: tracker.status,
-              title: tracker.errors[0].message,
-              description: tracker.errors[0].error
-            }
-          });*/
+					this.setState({
+						...this.state,
+						myTransactionsTracker: tracker,
+					})
 				}
 			}
 		}
@@ -182,7 +172,7 @@ class DashboardAlpha extends React.Component {
 		console.log(this.props.myTransactions)
 
 
-		const { userDetails, myTransactions, myWallets  } = this.state
+		const { userDetails, myTransactions,myTransactionsTracker, myWallets  } = this.state
 
 		console.log('My transactions ', myTransactions)
 
@@ -210,16 +200,13 @@ class DashboardAlpha extends React.Component {
 
 		const columns = [
 			{
-				title: 'ID',
-				dataIndex: 'id',
-			},
-			{
 				title: 'Receipt No.',
 				dataIndex: 'receiptNumber',
 			},
 			{
 				title: 'Amount',
-				dataIndex: 'amountTransacted',
+				key: 'amountTransacted',
+				render: record => numberUtils.NumberToKES(record.amountTransacted),
 			},
 			{
 				title: 'Description',
@@ -236,6 +223,8 @@ class DashboardAlpha extends React.Component {
 
 		return (
 			<React.Fragment>
+
+				<div style={{ display: 'flex', flexDirection: 'column'}}>
 
 				<Alert message={
 					<div>
@@ -258,6 +247,7 @@ class DashboardAlpha extends React.Component {
 						<Button type={"link"} size={"small"} style={{float:"right"}} onClick={() => this.props.history.push('/me/documents')}>Update KYC Details</Button>
 					</div>
 				} banner />
+				</div>
 				<br />
 
 			<div>
@@ -545,20 +535,20 @@ class DashboardAlpha extends React.Component {
 					{/*<Button className="ml-3">View All</Button>*/}
 				</div>
 
-				{
-					myTransactions &&
+
 					<Table
 						style={{background: "white"}}
 						bordered={true}
-						/*rowSelection={rowSelection}*/
 						columns={columns}
 						rowKey={record => record.id}
 						dataSource={myTransactions ? myTransactions.records: []}
-						// pagination={pagination}
-						loading={myTransactions === undefined}
-						// onChange={this.handleTableChange}
+						loading={myTransactionsTracker ? myTransactionsTracker.status === 'loading' : false}
+						pagination={false}
+						scroll={{
+							x: true,
+							scrollToFirstRowOnChange: true
+						}}
 					/>
-				}
 
 
 

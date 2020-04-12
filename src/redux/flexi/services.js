@@ -115,7 +115,7 @@ export async function initiateAPIRequest(reqParams){
 
                 if (filterArr.length > 0) {
                     filterArr.map((filter) => {
-                        return reqParamArr.push(`filter={${filter}}`)
+                        return reqParamArr.push(`filter=${filter}`)
                     });
 
                     if (reqParams.getParams.hasOwnProperty("strategy")) {

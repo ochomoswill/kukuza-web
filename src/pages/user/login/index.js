@@ -260,7 +260,10 @@ class Login extends Component {
 											extra={
 												<a href="#!"
 													 style={{float: "right"}}
-													 onClick={() => this.props.history.push("/user/forgot-password")}
+													 onClick={(ev) => {
+														 ev.preventDefault();
+													 	this.props.history.push("/user/forgot-password")}
+													 }
 													 className="utils__link--blue utils__link--underlined">
 														Forgot password
 													</a>}>
@@ -287,36 +290,15 @@ class Login extends Component {
 
                       <span className="ml-3 register-link">
                             {/*Don't have account? {' '}*/}
-                        <a href="#!" onClick={() => this.props.history.push('/user/signup')}
+                        <a href="#!" onClick={(ev) => {
+                        	ev.preventDefault();
+                        	this.props.history.push('/user/signup')
+                        }}
                            className="text-primary utils__link--underlined">
                               Apply Now
                             </a>
                         </span>
-                      {/*<Button
-                            className="width-100"
-                            htmlType="button"
-                            onClick={() => this.props.dispatch(push('/signup'))}
-                        >
-                            Sign Up
-                        </Button>*/}
                     </div>
-                    {/*<div className="form-group">
-                      <p>Use another service to Log In</p>
-                      <div className="mt-2">
-                        <a href="#!" className="btn btn-icon mr-2">
-                          <i className="icmn-facebook" />
-                        </a>
-                        <a href="#!" className="btn btn-icon mr-2">
-                          <i className="icmn-google" />
-                        </a>
-                        <a href="#!" className="btn btn-icon mr-2">
-                          <i className="icmn-windows" />
-                        </a>
-                        <a href="#!" className="btn btn-icon mr-2">
-                          <i className="icmn-twitter" />
-                        </a>
-                      </div>
-                    </div>*/}
                   </Form>
                 </div>
               </div>
