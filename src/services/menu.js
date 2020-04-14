@@ -134,6 +134,23 @@ export async function getLeftMenuData() {
       url: '/me/documents',
       icon: 'icmn icmn-books',
     },
+		{
+			divider: true,
+		},
+		{
+
+			title: 'Tools',
+			key: 'tools',
+			/*url: "/contributions",*/
+			icon: 'icmn icmn-briefcase',
+			children: [
+				{
+					key: 'confirmMPESAPayment',
+					title: 'Confirm M-PESA Payment',
+					url: '/tools/confirm-mpesa-payment',
+				}
+			],
+		},
     /*{
             divider: true
         },

@@ -6,9 +6,6 @@ import settings from './settings/reducers'
 import authReducer from './auth/reducers'
 import usersReducer from './users/reducers'
 import sysReducer from './sys/reducers'
-import integrationReducer from './integrations/reducers'
-import walletsReducer from './wallets/reducers'
-import transactionsReducer from './transactions/reducers'
 import loansReducer from './loans/reducers'
 import kinsReducer from './kin/reducers'
 import kinRelationsReducer from './kin_relations/reducers'
@@ -24,7 +21,6 @@ export default history =>
     authReducer,
     usersReducer,
     sysReducer,
-    integrationReducer,
     // walletsReducer,
     // transactionsReducer,
     loansReducer,

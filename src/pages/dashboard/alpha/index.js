@@ -45,8 +45,6 @@ class DashboardAlpha extends React.Component {
 	componentDidMount() {
 		console.log('Here is the user data ', getUserDetails())
 
-		const { pageSize, pageNumber, filterObj } = this.state
-
 		// this.props.transactionActions.fetchAllMyTransactions(pageSize, pageNumber, filterObj);
 		this.fetchMyTransactions()
 
@@ -261,41 +259,6 @@ class DashboardAlpha extends React.Component {
 					<span className="text-capitalize font-size-16">General Statistics</span>
 				</div>
 				<div className="row">
-					{/*{
-						myTransactions &&
-						<div className="col-xl-3">
-							<DashboardCard
-								title={'Transactions'}
-								amount={myTransactions.totalCount}
-								// amount={"KES 0"}
-								chartProps={{
-									width: 0,
-									height: 0,
-									lines: [],
-								}}
-							/>
-
-							<div className="row">
-								<div className="col-sm-8">
-                <span className="text-info" style={{ padding: '8px' }}>
-                  View your Transactions?
-                </span>
-								</div>
-
-								<div className="col-sm-4">
-									<Button
-										style={{ marginBottom: '20px', float: 'right' }}
-										type="primary"
-										onClick={() => this.props.history.push('/view-contributions')}
-									>
-										View Transactions
-										<Icon type="right"/>
-									</Button>
-								</div>
-							</div>
-						</div>
-					}*/}
-
 					<div className="col-xl-4">
 						<DashboardCard
 							title={'Total Contributions'}
@@ -310,25 +273,6 @@ class DashboardAlpha extends React.Component {
 								</Button>
 							}
 						/>
-
-						{/*<div className="row">
-							<div className="col-sm-8">
-                <span className="text-info" style={{ padding: '8px' }}>
-                  Contribute more?{' '}
-                </span>
-							</div>
-
-							<div className="col-sm-4">
-								<Button
-									style={{ marginBottom: '20px', float: 'right' }}
-									type="primary"
-									onClick={() => this.props.history.push('/make-contributions')}
-								>
-									Make Contribution
-									<Icon type="right"/>
-								</Button>
-							</div>
-						</div>*/}
 					</div>
 					<div className="col-xl-4">
 						<DashboardCard
@@ -344,24 +288,6 @@ class DashboardAlpha extends React.Component {
 								</Button>
 							}
 						/>
-						{/*<div className="row">
-							<div className="col-sm-8">
-                <span className="text-info" style={{ padding: '8px' }}>
-                  Contribute more?{' '}
-                </span>
-							</div>
-
-							<div className="col-sm-4">
-								<Button
-									style={{ marginBottom: '20px', float: 'right' }}
-									type="primary"
-									onClick={() => this.props.history.push('/make-contributions')}
-								>
-									Make Contribution
-									<Icon type="right"/>
-								</Button>
-							</div>
-						</div>*/}
 					</div>
 					<div className="col-xl-4">
 						<DashboardCard
@@ -377,24 +303,6 @@ class DashboardAlpha extends React.Component {
 								</Button>
 							}
 						/>
-						{/*<div className="row">
-							<div className="col-sm-8">
-                <span className="text-info" style={{ padding: '8px' }}>
-                  Like to apply for a loan?
-                </span>
-							</div>
-
-							<div className="col-sm-4">
-								<Button
-									style={{ marginBottom: '20px', float: 'right' }}
-									type="primary"
-									onClick={() => this.props.history.push('/apply-loan')}
-								>
-									Apply Loan
-									<Icon type="right"/>
-								</Button>
-							</div>
-						</div>*/}
 					</div>
 				</div>
 				<div className="utils__title utils__title--flat mb-3">
@@ -415,18 +323,6 @@ class DashboardAlpha extends React.Component {
 
 						/>
 
-						{/*<PaymentCard
-							icon={'icmn-coin-dollar'}
-							name={'Share Capital'}
-							number={userDetails.accountNumber}
-							// number={'K001-001-003'}
-							type={userDetails.userAccountType}
-							// type={'Account Type'}
-							footer={"Expires at 02/20"}
-							sum={'KES ' + numberUtils.numberWithCommas(shareCapital.toFixed(2))}
-							// sum={'KES 0'}
-						/>*/}
-
 					</div>
 					<div className="col-lg-4">
 						<DashboardCard
@@ -436,16 +332,6 @@ class DashboardAlpha extends React.Component {
 							// amount={'KES 0'}
 
 						/>
-
-						{/*<PaymentCard
-							icon={'icmn-drawer'}
-							name={'Loan Allowable'}
-							number={userDetails.accountNumber}
-							// number={'LN001'}
-							type={'VERIFIED'}
-							sum={'KES ' + numberUtils.numberWithCommas(loanAllowable.toFixed(2))}
-							// sum={'KES 0'}
-						/>*/}
 					</div>
 					<div className="col-lg-4">
 						<DashboardCard
@@ -455,77 +341,8 @@ class DashboardAlpha extends React.Component {
 							// amount={'KES 0'}
 
 						/>
-
-						{/*<PaymentCard
-							icon={'icmn-user-check'}
-							name={'Guarantors'}
-							number={userDetails.accountNumber}
-							// number={'K001-001-003'}
-							type={'0'}
-							sum={'KES 0.00'}
-						/>*/}
 					</div>
 				</div>
-				{/*<div className="utils__title utils__title--flat mb-3">
-					<span className="text-uppercase font-size-16">Profile Details</span>
-					<Button className="ml-3">View All</Button>
-				</div>*/}
-				{/*<div className="row">
-
-
-					 pending - warning , success - success
-					<div className="col-lg-4">
-						<PaymentAccount
-							icon={'icmn-radio-checked'}
-							number={'KYC Details'}
-							footer={'Documents and Personal Information'}
-							sum={'Pending'}
-							iconType={'warning'}
-							handleOnClick={() => this.props.history.push('/my-documents')}
-						/>
-					</div>
-					<div className="col-lg-4">
-						<PaymentAccount
-							icon={'icmn-radio-checked'}
-							number={'Kin Details'}
-							footer={'Next of Kin Information'}
-							sum={'Pending'}
-							iconType={'warning'}
-							handleOnClick={() => this.props.history.push('/kin-details')}
-						/>
-					</div>
-					<div className="col-lg-4">
-						<PaymentAccount
-							icon={'icmn-radio-checked'}
-							number={'User Profile'}
-							footer={'Personal Information and Profile'}
-							sum={'Pending'}
-							iconType={'warning'}
-							disabled={true}
-							handleOnClick={() => this.props.history.push('/profile')}
-						/>
-					</div>
-					<div className="col-lg-4">
-                        <PaymentAccount
-                            icon={'icmn-radio-checked'}
-                            number={'Bank Details'}
-                            footer={'Debit and Credit Account'}
-                            sum={'Pending'}
-                            iconType={'warning'}
-                            disabled={true}
-                            handleOnClick={() => this.props.history.push('/kin-details')}
-                        />
-                    </div>
-				</div>*/}
-				{/*<div className="row">
-					<div className="col-lg-12">
-						<div className="card">
-							<div className="card-body">
-								[src\pages\dashboard\alpha\index.js]
-							</div>
-						</div>
-					</div>
-				</div>*/}
 
 
 				<div className="utils__title utils__title--flat mb-3">
@@ -541,7 +358,7 @@ class DashboardAlpha extends React.Component {
 						bordered={true}
 						columns={columns}
 						rowKey={record => record.id}
-						dataSource={myTransactions ? myTransactions.records: []}
+						dataSource={myTransactions ? myTransactions.records.slice(0, 5): []}
 						loading={myTransactionsTracker ? myTransactionsTracker.status === 'loading' : false}
 						pagination={false}
 						scroll={{

@@ -8,10 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as userActions from 'redux/users/actions'
 import * as sysActions from 'redux/sys/actions'
-import * as integrationActions from 'redux/integrations/actions'
 import * as userSelectors from 'redux/users/selectors'
 import * as sysSelectors from 'redux/sys/selectors'
-import * as integrationSelectors from 'redux/integrations/selectors'
 
 import timeUtils from 'utils/datetime'
 import mpesaImage from 'assets/images/mpesa_logo.png'
@@ -25,7 +23,6 @@ const mapStateToProps = state => {
 		users: userSelectors.getUsers(state),
 		newUser: userSelectors.getNewUser(state),
 		preRegRef: sysSelectors.getPreRegRef(state),
-		paymentStatus: integrationSelectors.getPaymentStatus(state),
 	}
 }
 
@@ -33,7 +30,6 @@ const mapDispatchToProps = dispatch => {
 	return {
 		userActions: bindActionCreators(userActions, dispatch),
 		sysActions: bindActionCreators(sysActions, dispatch),
-		integrationActions: bindActionCreators(integrationActions, dispatch),
 	}
 }
 
@@ -168,14 +164,14 @@ class SignUp extends Component {
 	}
 
 	handleSignUp = () => {
-		if (this.props.paymentStatus.tracker.status === 'success') {
+		/*if (this.props.paymentStatus.tracker.status === 'success') {
 			this.props.userActions.createUser(this.state.formValues)
 		} else {
 			this.setState({
 				...this.state,
 				signUpApproval: false,
 			})
-		}
+		}*/
 	}
 
 	render() {

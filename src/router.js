@@ -78,6 +78,10 @@ const routes = [
     path: '/me/change-password',
     component: loadable(() => import('pages/me/ChangePassword')),
   },
+	{
+		path: '/tools/confirm-mpesa-payment',
+		component: loadable(() => import('pages/tools/ConfirmMPESAPayment')),
+	},
 ]
 
 class Router extends React.Component {

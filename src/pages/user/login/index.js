@@ -239,7 +239,7 @@ class Login extends Component {
 
 
                   <Form layout="vertical" hideRequiredMark onSubmit={this.onSubmit}>
-                    <Form.Item label="Username" extra={"You can use your Username/Phone No. (2547..)/Email/Acc. No."}>
+										<Form.Item label="Username" extra={<p>Use your <b>username</b>, <b>phone number</b>, <b>email</b> or <b>account number</b></p>}>
                       {form.getFieldDecorator('username', {
                         rules: [
                           {

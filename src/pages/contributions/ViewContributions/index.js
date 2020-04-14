@@ -98,7 +98,7 @@ class ViewContributions extends React.Component {
 				}
 
 				if (tracker.status === 'success') {
-					console.log('my transactions fetch a success')
+					// console.log('my transactions fetch a success')
 
 					if(this.state.periodValue === "range"){
 						this.setState({

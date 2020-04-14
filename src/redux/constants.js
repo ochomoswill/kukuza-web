@@ -42,6 +42,32 @@ export const Entities = {
 			fnHandleRequest(options);
 		}
 	},
+	myLoans: {
+		url: "me/loans",
+		name: "myLoans",
+		fnGetMyLoan: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetMyLoans: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
 	myTransactions: {
 		url: "me/transactions",
 		name: "myTransactions",
@@ -93,6 +119,50 @@ export const Entities = {
 
 			fnHandleRequest(options);
 		}
-	}
+	},
+	confirmMPESAPayment: {
+		url: "confirm-payment/sky-mpesa",
+		name: "confirmMPESAPayment",
+		fnConfirmMPESAPayment: (fnHandleRequest, reqParams = undefined) => {
+
+			// type=MISC
+			// &paymentReference=NKO87D18IG
+			// &phoneNumber=0713000249
+			const {name, url} = Entities.confirmMPESAPayment;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
+	stkPush: {
+		url: "integrations/safaricom/stk-push",
+		name: "stkPush",
+		fnInitiateStkPush: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.stkPush;
+			const builtReqParams = new RequestParamsBuilder()
+				.withMethod("post")
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).create(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetStkPushLogs: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.stkPush;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(`${url}/logs`)
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).create(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
 }
 
