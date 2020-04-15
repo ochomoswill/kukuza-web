@@ -2,6 +2,7 @@ import React from 'react'
 import { Input, Icon, Checkbox } from 'antd'
 import { injectIntl } from 'react-intl'
 import styles from './style.module.scss'
+import { SearchOutlined } from '@ant-design/icons';
 
 @injectIntl
 class LiveSearch extends React.Component {
@@ -61,7 +62,7 @@ class LiveSearch extends React.Component {
         <Input
           className={styles.extInput}
           placeholder={formatMessage({ id: 'topBar.typeToSearch' })}
-          prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}
+          prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
           style={{ width: 200 }}
           onFocus={this.showLiveSearch}
         />

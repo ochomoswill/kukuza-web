@@ -66,7 +66,64 @@ export const Entities = {
 			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
 
 			fnHandleRequest(options);
-		}
+		},
+		fnCreateLoan: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withMethod("put")
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).create(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetMyGuarantors: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(`${url}/${reqParams.data.loanId}/guarantors`)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetGuarantorshipRequests: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(`${url}/guarantorship-requests`)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetGuarantorshipRequest: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(`${url}/guarantorship-requests`)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnUpdateGuarantorship: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.myLoans;
+			const builtReqParams = new RequestParamsBuilder()
+				.withMethod("post")
+				.withUrl(`${url}/update-guarantorship`)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).create(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
 	},
 	myTransactions: {
 		url: "me/transactions",
@@ -110,6 +167,84 @@ export const Entities = {
 		},
 		fnGetMyWallets: (fnHandleRequest, reqParams = undefined) => {
 			const {name, url} = Entities.myWallets;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
+	users: {
+		url: "users/",
+		name: "users",
+		fnGetUser: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.users;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetUsers: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.users;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
+	loanTypes: {
+		url: "loan-types/",
+		name: "loanTypes",
+		fnGetLoanType: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.loanTypes;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetLoanTypes: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.loanTypes;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).readMany(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		}
+	},
+	loanStatuses: {
+		url: "loan-status/",
+		name: "loanStatuses",
+		fnGetLoanStatus: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.loanStatuses;
+			const builtReqParams = new RequestParamsBuilder()
+				.withUrl(url)
+				.isAuthenticated()
+				.build();
+
+			const options = new HandleRequestOptsDirector(new HandleRequestOptsBuilder()).read(name, {...builtReqParams, ...reqParams}).done();
+
+			fnHandleRequest(options);
+		},
+		fnGetLoanStatuses: (fnHandleRequest, reqParams = undefined) => {
+			const {name, url} = Entities.loanStatuses;
 			const builtReqParams = new RequestParamsBuilder()
 				.withUrl(url)
 				.isAuthenticated()

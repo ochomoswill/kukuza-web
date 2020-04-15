@@ -14,6 +14,7 @@ import * as sysSelectors from 'redux/sys/selectors'
 import timeUtils from 'utils/datetime'
 import mpesaImage from 'assets/images/mpesa_logo.png'
 import CustomAlert from '../../../components/KukuzaComponents/CustomAlert'
+import { PhoneOutlined, UserOutlined, MailOutlined } from '@ant-design/icons'
 
 const Step = Steps.Step
 const { Panel } = Collapse;
@@ -38,7 +39,7 @@ const { TabPane } = Tabs;
 	mapStateToProps,
 	mapDispatchToProps,
 )*/
-@Form.create()
+// @Form.create()
 class SignUp extends Component {
 	state = {
 		categoryValue: undefined,
@@ -174,10 +175,15 @@ class SignUp extends Component {
 		}*/
 	}
 
+	onFinish = values => {
+		console.log('Success:', values)
+	}
+
+	onFinishFailed = errorInfo => {
+		console.log('Failed:', errorInfo)
+	}
+
 	render() {
-		const {
-			form: { getFieldDecorator },
-		} = this.props
 
 		const { shouldBlockNavigation } = this.state
 
@@ -256,15 +262,15 @@ class SignUp extends Component {
 														<div className={"row"}>
 															<div className={"col-lg-12"}>
 																<Form onSubmit={this.handleSubmit} className="login-form">
-																	<Form.Item label={"Phone Number"}>
-																		{getFieldDecorator('phoneNo', {
-																			rules: [{ required: true, message: 'Please input your phone number!' }],
-																		})(
+																	<Form.Item
+																		label={"Phone Number"}
+																		name={"stkPushReceiver"}
+																		rules={[{ required: true, message: 'Please input your phone number!' }]}
+																	>
 																			<Input
-																				prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																				prefix={<PhoneOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
 																				placeholder="Phone Number"
-																			/>,
-																		)}
+																			/>
 																	</Form.Item>
 																	<div className="form-actions">
 																		<Button
@@ -297,38 +303,44 @@ class SignUp extends Component {
 													showIcon={true}
 												/>
 
-												<Form onSubmit={this.handleSubmit} className="login-form">
-													<Form.Item label={"Full Name"} extra={"Format: [FirstName] [MiddleName] [Surname]"}>
-														{getFieldDecorator('fullName', {
-															rules: [{ required: true, message: 'Please input your full name!' }],
-														})(
+												<Form
+													layout={"vertical"}
+													onFinish={this.onFinish}
+													onFinishFailed={this.onFinishFailed}
+													className="login-form">
+													<Form.Item
+														label={"Full Name"}
+														name={"fullName"}
+														rules={[{ required: true, message: 'Please input your full name!' }]}
+														extra={"Format: [FirstName] [MiddleName] [Surname]"}
+													>
 															<Input
-																prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
 																placeholder="Full Name"
-															/>,
-														)}
+															/>
 													</Form.Item>
 
-													<Form.Item label={"Email Address"}>
-														{getFieldDecorator('email', {
-															rules: [{ required: true, message: 'Please input your email address!', type: 'email' }],
-														})(
+													<Form.Item
+														label={"Email Address"}
+														name={"email"}
+														rules={[{ required: true, message: 'Please input your email address!', type: 'email' }]}
+													>
 															<Input
-																prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
 																placeholder="Email Address"
-															/>,
-														)}
+															/>
 													</Form.Item>
 
-													<Form.Item label={"Phone Number"}>
-														{getFieldDecorator('phoneNo', {
-															rules: [{ required: true, message: 'Please input your phone number!' }],
-														})(
+													<Form.Item
+														label={"Phone Number"}
+														name={"phoneNo"}
+														rules={[{ required: true, message: 'Please input your phone number!' }]}
+													>
+
 															<Input
-																prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																prefix={<PhoneOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
 																placeholder="Phone Number"
-															/>,
-														)}
+															/>
 													</Form.Item>
 													<div className="form-actions">
 														<Button

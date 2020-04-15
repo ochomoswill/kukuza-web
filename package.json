@@ -34,7 +34,7 @@
 		"@react-pdf/renderer": "^1.6.8",
 		"@react-pdf/styled-components": "^1.4.0",
 		"@rowno/sparkline": "^4.0.0",
-		"antd": "^3.20.3",
+		"antd": "^4.1.2",
 		"axios": "^0.19.2",
 		"bootstrap-css-only": "^4.3.1",
 		"chart.js": "^2.8.0",

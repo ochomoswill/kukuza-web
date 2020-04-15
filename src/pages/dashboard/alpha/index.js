@@ -9,8 +9,9 @@ import numberUtils from 'utils/number'
 import { getUserDetails } from '../../../utils/Session'
 import { Entities } from '../../../redux/constants'
 import ActionContainer from '../../../redux/ActionContainer'
-import {RightOutlined} from '@ant-design/icons'
+import { DollarOutlined, ReconciliationOutlined, RightOutlined, WalletOutlined } from '@ant-design/icons'
 import timeUtils from '../../../utils/datetime'
+import { dashboardCardAvatarStyle } from '../../../components/CleanUIComponents/DashboardCard'
 
 
 class DashboardAlpha extends React.Component {
@@ -264,12 +265,12 @@ class DashboardAlpha extends React.Component {
 							title={'Total Contributions'}
 							amount={'KES ' + numberUtils.numberWithCommas(totalContributions.toFixed(2))}
 							// amount={'KES 0'}
-							icon={"reconciliation"}
+							icon={<ReconciliationOutlined style={dashboardCardAvatarStyle}/>}
 							link={
 								<Button
 									type={'link'}
 									onClick={() => this.props.history.push('/contributions/view')}>
-									View Contributions <Icon type={"right"}/>
+									View Contributions <RightOutlined/>
 								</Button>
 							}
 						/>
@@ -278,13 +279,13 @@ class DashboardAlpha extends React.Component {
 						<DashboardCard
 							title={'Book Balance'}
 							amount={'KES ' + numberUtils.numberWithCommas(bookBalance.toFixed(2))}
-							icon={"wallet"}
+							icon={<WalletOutlined style={dashboardCardAvatarStyle}/>}
 							// amount={'KES 0'}
 							link={
 								<Button
 									type={'link'}
 									onClick={() => this.props.history.push('/contributions/make')}>
-									Make Contribution <Icon type={"right"}/>
+									Make Contribution <RightOutlined/>
 								</Button>
 							}
 						/>
@@ -293,13 +294,13 @@ class DashboardAlpha extends React.Component {
 						<DashboardCard
 							title={'Loan + Interest'}
 							amount={'KES ' + numberUtils.numberWithCommas(loan.toFixed(2))}
-							icon={"dollar"}
+							icon={<DollarOutlined style={dashboardCardAvatarStyle}/>}
 							// amount={'KES 0'}
 							link={
 								<Button
 									type={'link'}
 									onClick={() => this.props.history.push('/loans/view')}>
-										View Loans <Icon type={"right"}/>
+										View Loans <RightOutlined/>
 								</Button>
 							}
 						/>

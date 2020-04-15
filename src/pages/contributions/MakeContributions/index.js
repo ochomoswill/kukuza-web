@@ -7,13 +7,18 @@ import { Entities } from '../../../redux/constants'
 import ActionContainer from '../../../redux/ActionContainer'
 import { getUserDetails } from '../../../utils/Session'
 import numberUtils from '../../../utils/number'
+import { PhoneOutlined } from '@ant-design/icons'
 
 const { TabPane } = Tabs
 
 const { Option } = Select
 
-@Form.create()
+// @Form.create()
 class MakeContributions extends React.Component {
+
+	contributeFormRef = React.createRef();
+	stkPushFormRef = React.createRef();
+
 	state = {
 		showPaymentOptions: false,
 		myWallets: { data: [], tracker: undefined},
@@ -190,40 +195,29 @@ class MakeContributions extends React.Component {
 
 	}
 
-	onSubmit = event => {
-		event.preventDefault()
-		const { form } = this.props
-		form.validateFieldsAndScroll((error, values) => {
-			if (!error) {
+	onFinish = values => {
 
-				console.log('Values ', values)
+		console.log('Values ', values)
 
 
-				this.setState({
-					...this.state,
-					showPaymentOptions: true,
-				})
-
-
-				setTimeout(() => {
-					// server validate
-					if (getUserDetails() !== undefined) {
-						this.props.form.setFields({
-							phoneNo: {
-								value: getUserDetails().phoneNumber,
-							},
-						});
-					}
-				}, 500);
-			}
+		this.setState({
+			...this.state,
+			showPaymentOptions: true,
 		})
+
+
+		setTimeout(() => {
+			// server validate
+			if (getUserDetails() !== undefined) {
+				this.stkPushFormRef.current.setFieldsValue({
+					phoneNo:  getUserDetails().phoneNumber
+				});
+			}
+		}, 500);
 	}
 
-	handleMpesaExpressSubmit = (event) => {
-		event.preventDefault()
-		const { form } = this.props
-		form.validateFieldsAndScroll(['wallet', 'amount', 'phoneNo'], (error, values) => {
-			if (!error) {
+	handleMpesaExpressSubmit = (values) => {
+
 
 				console.log('MpesaExpress Values ', values);
 				const {transactionDesc} = this.state;
@@ -239,42 +233,12 @@ class MakeContributions extends React.Component {
 				}, 2000);
 
 				this.initiateStkPush({
-					amount:values.amount,
+					amount: this.contributeFormRef.current.getFieldValue("amount"),
 					phoneNumber: numberUtils.sanitizeMobileNo(values.phoneNo),
 					accountReference: this.getContributionId(),
 					transactionDesc
 				})
-			}
-		})
-	}
 
-
-	handleLipaNaMpesaSubmit = (event) => {
-		event.preventDefault()
-		const { form } = this.props
-		form.validateFieldsAndScroll(['wallet', 'amount',  'mPesaTransactionNo'], (error, values) => {
-			if (!error) {
-
-				console.log('LipaNaMpesa Values ', values);
-
-				setTimeout(() => {
-					let contributionMade = {};
-					contributionMade["status"] = true;
-					contributionMade["type"] = "LipaNaMpesa";
-					this.setState({
-						...this.state,
-						contributionMade
-					})
-				}, 2000);
-
-				this.confirmMPESAPayment({
-					type: "MISC",
-					paymentReference: values.mPesaTransactionNo,
-					phoneNumber: getUserDetails().phoneNumber
-				})
-
-			}
-		})
 	}
 
 	getContributionId = () => {
@@ -433,14 +397,15 @@ class MakeContributions extends React.Component {
 										<React.Fragment>
 											<Form
 												{...layout}
-												onSubmit={this.onSubmit}
+												ref={this.contributeFormRef}
+												onFinish={this.onFinish}
 											>
 												<Form.Item
 													label="Wallet"
+													name={"wallet"}
+													rules={[{ required: true, message: 'Please select a Wallet!' }]}
 												>
-													{form.getFieldDecorator('wallet', {
-														rules: [{ required: true, message: 'Please select a Wallet!' }],
-													})(
+
 														<Select placeholder="Please select a Wallet">
 
 															{
@@ -449,19 +414,15 @@ class MakeContributions extends React.Component {
 																		<Option key={myWallet.id} value={myWallet.id}>{myWallet.walletName}</Option>
 																	)): []
 															}
-														</Select>,
-													)}
-
+														</Select>
 												</Form.Item>
 
 												<Form.Item
 													label="Amount"
+													name={"amount"}
+													rules={[{ required: true, message: 'Please input the amount!' }]}
 												>
-													{form.getFieldDecorator('amount', {
-														rules: [{ required: true, message: 'Please input the amount!' }],
-													})(
-														<InputNumber min={0}/>,
-													)}
+														<InputNumber min={0}/>
 												</Form.Item>
 
 												{/*<Form.Item
@@ -516,17 +477,15 @@ class MakeContributions extends React.Component {
 															<div className={'col-lg-12'}>
 																<Form
 																	{...layout}
-																	onSubmit={this.handleMpesaExpressSubmit}>
+																	ref={this.stkPushFormRef}
+																	onFinish={this.handleMpesaExpressSubmit}>
 
 																	<Form.Item
 																		label="Phone Number"
+																		name={"phoneNo"}
+																		rules={[{ required: true, message: 'Please input the phone number!' }]}
 																	>
-																		{form.getFieldDecorator('phoneNo', {
-																			rules: [{ required: true, message: 'Please input the phone number!' }],
-																		})(
-																			<Input prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }}/>}/>
-																		)}
-
+																			<Input prefix={<PhoneOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}/>
 																	</Form.Item>
 
 																	<div style={{ borderTop: '1px solid rgb(235, 237, 240)', paddingTop: 10 }}>
@@ -563,7 +522,7 @@ class MakeContributions extends React.Component {
 																	<Timeline.Item>
 																		Enter the Account No. <strong>{this.getContributionId()}</strong>
 																	</Timeline.Item>
-																	<Timeline.Item>Enter the Amount <strong>{numberUtils.NumberToKES(this.props.form.getFieldValue("amount"))}</strong></Timeline.Item>
+																	<Timeline.Item>Enter the Amount <strong>{numberUtils.NumberToKES(this.contributeFormRef.current.getFieldValue("amount"))}</strong></Timeline.Item>
 																	<Timeline.Item>Enter your PIN</Timeline.Item>
 																	<Timeline.Item>You will receive an M-PESA message confirming your transaction shortly after. The Payment Reference Number e.g ODE4XXX15I, can be used to confirm the payment.</Timeline.Item>
 																</Timeline>

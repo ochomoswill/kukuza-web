@@ -1,15 +1,16 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
-import { Button, Form, Input, InputNumber, PageHeader, Result, Descriptions } from 'antd'
+import { Button, Descriptions, Form, Input, InputNumber, PageHeader, Result } from 'antd'
 import { Entities } from '../../../redux/constants'
 import ActionContainer from '../../../redux/ActionContainer'
 import { getUserDetails } from '../../../utils/Session'
 import numberUtils from '../../../utils/number'
 import timeUtils from '../../../utils/datetime'
 
-@Form.create()
+// @Form.create()
 class ConfirmMPESAPayment extends React.Component {
+	confirmMPESAPaymentFormRef = React.createRef();
 	state = {
 		confirmMPESAPayment: { data: [], tracker: undefined },
 		transactionDesc: 'CONTRIBUTION',
@@ -43,10 +44,8 @@ class ConfirmMPESAPayment extends React.Component {
 
 	setPhoneNumberField = () => {
 		if (getUserDetails() !== undefined) {
-			this.props.form.setFields({
-				phoneNumber: {
-					value: getUserDetails().phoneNumber,
-				},
+			this.confirmMPESAPaymentFormRef.current.setFieldsValue({
+				phoneNumber:  getUserDetails().phoneNumber
 			})
 		}
 	}
@@ -57,8 +56,6 @@ class ConfirmMPESAPayment extends React.Component {
 			if (prevProps.confirmMPESAPayment.readOne !== this.props.confirmMPESAPayment.readOne) {
 				const { tracker, data } = this.props.confirmMPESAPayment.readOne
 				const { confirmMPESAPayment } = this.state
-
-
 
 
 				if (tracker.status === 'loading') {
@@ -75,10 +72,10 @@ class ConfirmMPESAPayment extends React.Component {
 					contributionMade['status'] = true
 					const theConfirmMPESAPayment = confirmMPESAPayment
 					theConfirmMPESAPayment.tracker = tracker
-					theConfirmMPESAPayment.data = data;
+					theConfirmMPESAPayment.data = data
 					this.setState({
 						confirmMPESAPayment: theConfirmMPESAPayment,
-						contributionMade
+						contributionMade,
 					})
 				}
 
@@ -90,7 +87,7 @@ class ConfirmMPESAPayment extends React.Component {
 					theConfirmMPESAPayment.tracker = tracker
 					this.setState({
 						confirmMPESAPayment: theConfirmMPESAPayment,
-						contributionMade
+						contributionMade,
 					})
 				}
 			}
@@ -98,17 +95,11 @@ class ConfirmMPESAPayment extends React.Component {
 
 	}
 
-	onSubmit = event => {
-		event.preventDefault()
-		const { form } = this.props
-		form.validateFieldsAndScroll((error, values) => {
-			if (!error) {
-				this.confirmMPESAPayment({
-					type: 'MISC',
-					paymentReference: values.paymentReference,
-					phoneNumber: values.phoneNumber,
-				})
-			}
+	onFinish = values => {
+		this.confirmMPESAPayment({
+			type: 'MISC',
+			paymentReference: values.paymentReference,
+			phoneNumber: values.phoneNumber,
 		})
 	}
 
@@ -116,10 +107,10 @@ class ConfirmMPESAPayment extends React.Component {
 		const contributionMade = {
 			status: false,
 		}
-		this.setState({ ...this.state, contributionMade });
+		this.setState({ ...this.state, contributionMade })
 
-		setTimeout(()=> {
-			this.setPhoneNumberField();
+		setTimeout(() => {
+			this.setPhoneNumberField()
 		}, 1000)
 
 	}
@@ -170,27 +161,6 @@ class ConfirmMPESAPayment extends React.Component {
 								{
 									contributionMade.status ? (
 										<React.Fragment>
-
-
-											{/*id: 98
-											skyPesaId: 8293081
-											sender: 254723782649
-											senderDetails: "WILLIAM OTIENO OCHOMO"
-											receiver: 926056
-											receiverDetails: "KUKUZA INVESTMENT C2B"
-											currency: "KES"
-											amount: 10
-											account: "CON1003"
-											reference: "ODE4HOE15I"
-											dateCreated: 1586885329000
-											serviceTypeCode: 101
-											serviceTypeName: ""
-											providerCode: 101
-											providerName: "Safaricom Limited"
-											integrityHash: "4a7d807e628cb154786aaa180cec33e9de6139f999f02f310e32d79fadcbbe48"
-											created: 1586885390162*/}
-
-
 											{
 												!!confirmMPESAPayment.tracker && confirmMPESAPayment.tracker.status === 'success' &&
 												<Result
@@ -202,11 +172,16 @@ class ConfirmMPESAPayment extends React.Component {
 															<Descriptions.Item label="Ref">{confirmMPESAPayment.data.reference}</Descriptions.Item>
 															<Descriptions.Item label="Account">{confirmMPESAPayment.data.account}</Descriptions.Item>
 															<Descriptions.Item label="Sender">{confirmMPESAPayment.data.sender}</Descriptions.Item>
-															<Descriptions.Item label="Sender Details">{confirmMPESAPayment.data.senderDetails}</Descriptions.Item>
-															<Descriptions.Item label="Receiver">{confirmMPESAPayment.data.receiver}</Descriptions.Item>
-															<Descriptions.Item label="Receiver Details">{confirmMPESAPayment.data.receiverDetails}</Descriptions.Item>
-															<Descriptions.Item label="Amount">{numberUtils.NumberToKES(confirmMPESAPayment.data.amount)}</Descriptions.Item>
-															<Descriptions.Item label="Date">{timeUtils.formatDateTime(confirmMPESAPayment.data.dateCreated)}</Descriptions.Item>
+															<Descriptions.Item
+																label="Sender Details">{confirmMPESAPayment.data.senderDetails}</Descriptions.Item>
+															<Descriptions.Item
+																label="Receiver">{confirmMPESAPayment.data.receiver}</Descriptions.Item>
+															<Descriptions.Item
+																label="Receiver Details">{confirmMPESAPayment.data.receiverDetails}</Descriptions.Item>
+															<Descriptions.Item
+																label="Amount">{numberUtils.NumberToKES(confirmMPESAPayment.data.amount)}</Descriptions.Item>
+															<Descriptions.Item
+																label="Date">{timeUtils.formatDateTime(confirmMPESAPayment.data.dateCreated)}</Descriptions.Item>
 														</Descriptions>
 													}
 													extra={[
@@ -247,32 +222,29 @@ class ConfirmMPESAPayment extends React.Component {
 									) : (
 										<React.Fragment>
 											<Form
+												ref={this.confirmMPESAPaymentFormRef}
 												{...layout}
-												onSubmit={this.onSubmit}
+												onFinish={this.onFinish}
 											>
 												<Form.Item
 													label="Payment Reference"
+													name={"paymentReference"}
+													rules={[{ required: true, message: 'Please input the Payment Reference!' }]}
 												>
-													{form.getFieldDecorator('paymentReference', {
-														rules: [{ required: true, message: 'Please input the Payment Reference!' }],
-													})(
-														<Input placeholder={'ODE4HOE15I'}/>,
-													)}
-
+														<Input placeholder={'ODE4HOE15I'}/>
 												</Form.Item>
 
 												<Form.Item
 													label="Phone Number"
+													name={'phoneNumber'}
+													rules={[{ required: true, message: 'Please input the Phone Number!' }]}
 												>
-													{form.getFieldDecorator('phoneNumber', {
-														rules: [{ required: true, message: 'Please input the Phone Number!' }],
-													})(
-														<InputNumber style={{ width: '100%' }} min={0}/>,
-													)}
+														<InputNumber style={{ width: '100%' }} min={0}/>
 												</Form.Item>
 
 												<Form.Item>
-													<Button type="primary" htmlType="submit" loading={confirmMPESAPayment.tracker ? confirmMPESAPayment.tracker.status === "loading" : false}>
+													<Button type="primary" htmlType="submit"
+																	loading={confirmMPESAPayment.tracker ? confirmMPESAPayment.tracker.status === 'loading' : false}>
 														Confirm Payment
 													</Button>
 

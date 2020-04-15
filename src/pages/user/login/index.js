@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux';
-import * as authActions from '../../../redux/auth/actions'
 
-import { Form, Input, Button, Checkbox, Alert } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { Helmet } from 'react-helmet'
-import { Link , withRouter} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import styles from './style.module.scss'
 import Icon from 'antd/es/icon'
@@ -13,8 +10,12 @@ import { Entities } from '../../../redux/constants'
 import ActionContainer from '../../../redux/ActionContainer'
 import CustomAlert from '../../../components/KukuzaComponents/CustomAlert'
 import { saveToLocalStorage } from '../../../redux/localStorage'
-import { AUTH_DETAILS_LOCAL_STORAGE_KEY, LOG_IN_TIME_LOCAL_STORAGE_KEY } from '../../../constants/General'
-import timeUtils from '../../../utils/datetime'
+import { AUTH_DETAILS_LOCAL_STORAGE_KEY } from '../../../constants/General'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import * as authActions from '../../../redux/auth/actions'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+
 
 const mapDispatchToProps = dispatch => {
 	return {
@@ -22,32 +23,30 @@ const mapDispatchToProps = dispatch => {
 	}
 }
 
-@Form.create()
-@connect(({ user }) => ({ user }), mapDispatchToProps)
 class Login extends Component {
 	state = {
 		loginTracker: false,
 		messageBar: {
 			show: false,
-			type: "info",
-			title: "",
-			description: ""
-		}
+			type: 'info',
+			title: '',
+			description: '',
+		},
 	}
 
 	static setAuthDetails(authDetails) {
 		//localStorage.setItem(General.AUTH_DETAILS_LOCAL_STORAGE_KEY, JSON.stringify(authDetails));
 
-		saveToLocalStorage(authDetails, AUTH_DETAILS_LOCAL_STORAGE_KEY);
+		saveToLocalStorage(authDetails, AUTH_DETAILS_LOCAL_STORAGE_KEY)
 	}
 
-  onSubmit = event => {
-    event.preventDefault()
-    const { form } = this.props
-    form.validateFields((error, values) => {
-      if (!error) {
+	/*onSubmit = event => {
+		event.preventDefault()
+		const { form } = this.props
+		form.validateFields((error, values) => {
+			if (!error) {
 
-        /*const reqParams = {
+				/!*const reqParams = {
           url: Entities.login.url,
           method: APIRequestMethod.POST,
           headers: {
@@ -68,45 +67,45 @@ class Login extends Component {
           typeSubString: ActionTypeSubString.create,
         };
 
-        this.props.handleRequest(options);*/
+        this.props.handleRequest(options);*!/
 
-        const {handleRequest} = this.props;
+				const { handleRequest } = this.props
 
 				const reqParams = {
 					getParams: {
 						activePage: this.props.location.pathname,
 						username: values.username,
 						password: btoa(values.password),
-						grant_type: "password",
-					}
-				};
+						grant_type: 'password',
+					},
+				}
 
-				Entities.login.fnLogin(handleRequest, reqParams);
+				Entities.login.fnLogin(handleRequest, reqParams)
 
-      }
-    })
-  }
+			}
+		})
+	}*/
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+	componentDidUpdate(prevProps, prevState, snapshot) {
 		/* Compare Login Props */
 		if (prevProps.login !== this.props.login) {
-			const {tracker, data} = this.props.login.create;
+			const { tracker, data } = this.props.login.create
 
 
-			if (tracker.status === "loading") {
+			if (tracker.status === 'loading') {
 				this.setState({
 					...this.state,
 					loginTracker: tracker,
 					messageBar: {
 						show: false,
-						type: "info",
-						title: "",
-						description: ""
-					}
+						type: 'info',
+						title: '',
+						description: '',
+					},
 				})
 
 			}
-			if (tracker.status === "success") {
+			if (tracker.status === 'success') {
 				// console.log("auth was a success");
 
 				this.setState({
@@ -115,25 +114,23 @@ class Login extends Component {
 					messageBar: {
 						show: true,
 						type: tracker.status,
-						title: "Success!",
-						description: "Login Successful"
-					}
-				});
+						title: 'Success!',
+						description: 'Login Successful',
+					},
+				})
 
-				const {accessToken, user} = data;
+				const { accessToken, user } = data
 
-				Login.setAuthDetails(data);
+				Login.setAuthDetails(data)
 
 
-				this.props.authActions.setAccessToken(accessToken);
-				this.props.authActions.setUser(user);
-				this.props.authActions.setAuthenticationStatus(true);
+				this.props.authActions.setAccessToken(accessToken)
+				this.props.authActions.setUser(user)
+				this.props.authActions.setAuthenticationStatus(true)
 
-				this.props.history.push("/dashboard/alpha");
+				this.props.history.push('/dashboard/alpha')
 
 				// Reset Login Status
-
-
 
 
 				// todo Redirect to Change Password Page is Password Status is RESET
@@ -152,7 +149,7 @@ class Login extends Component {
 			}
 
 
-			if (tracker.status === "error") {
+			if (tracker.status === 'error') {
 				this.setState({
 					...this.state,
 					loginTracker: tracker,
@@ -160,9 +157,9 @@ class Login extends Component {
 						show: true,
 						type: tracker.status,
 						title: tracker.errors[0].message,
-						description: tracker.errors[0].error
-					}
-				});
+						description: tracker.errors[0].error,
+					},
+				})
 
 
 				/*this.props.showMessageBar({
@@ -181,13 +178,30 @@ class Login extends Component {
 
 	}
 
-	render() {
-    const {
-      form,
-      // user: { loading },
-    } = this.props;
+	onFinish = values => {
+		console.log('Success:', values);
 
-    const {loginTracker, messageBar} = this.state;
+		const { handleRequest } = this.props
+
+		const reqParams = {
+			getParams: {
+				activePage: this.props.location.pathname,
+				username: values.username,
+				password: btoa(values.password),
+				grant_type: 'password',
+			},
+		}
+
+		Entities.login.fnLogin(handleRequest, reqParams)
+	}
+
+	onFinishFailed = errorInfo => {
+		console.log('Failed:', errorInfo)
+	}
+
+	render() {
+
+		const { loginTracker, messageBar } = this.state
 
 		/*console.log("Log in prop ", this.props.login);
 
@@ -198,23 +212,23 @@ class Login extends Component {
 		}*/
 
 
-    return (
-      <div>
-        <Helmet title="Login" />
-        <div className={`${styles.title} login-heading`}>
-          <h1 className="mb-3 text-white">
-            <strong>Log In</strong>
-          </h1>
-        </div>
-        <div className={styles.block}>
-          <div className="row">
-            <div className="col-xl-12">
-              <div className={styles.inner}>
-                <div className={styles.form}>
-                  <h4>
-                    Hello, who’s this?
-                  </h4>
-                  <br />
+		return (
+			<div>
+				<Helmet title="Login"/>
+				<div className={`${styles.title} login-heading`}>
+					<h1 className="mb-3 text-white">
+						<strong>Log In</strong>
+					</h1>
+				</div>
+				<div className={styles.block}>
+					<div className="row">
+						<div className="col-xl-12">
+							<div className={styles.inner}>
+								<div className={styles.form}>
+									<h4>
+										Hello, who’s this?
+									</h4>
+									<br/>
 
 
 									{/*{
@@ -238,91 +252,107 @@ class Login extends Component {
 									/>
 
 
-                  <Form layout="vertical" hideRequiredMark onSubmit={this.onSubmit}>
-										<Form.Item label="Username" extra={<p>Use your <b>username</b>, <b>phone number</b>, <b>email</b> or <b>account number</b></p>}>
-                      {form.getFieldDecorator('username', {
-                        rules: [
-                          {
-                            type: 'string',
-                            message: 'The input is not a valid username',
-                          },
-                          {
-                            required: true,
-                            message: 'Please input your username',
-                          },
-                        ],
-                      })(<Input
-                        prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                        size="default"/>)}
-                    </Form.Item>
-                    <Form.Item
+									<Form
+										layout="vertical"
+										hideRequiredMark
+										onFinish={this.onFinish}
+										onFinishFailed={this.onFinishFailed}
+									>
+										<Form.Item
+											label="Username"
+											name={'username'}
+											rules={[
+												{
+													type: 'string',
+													message: 'The input is not a valid username',
+												},
+												{
+													required: true,
+													message: 'Please input your username',
+												},
+											]}
+											extra={<p>Use your <b>username</b>, <b>phone number</b>, <b>email</b> or <b>account number</b>
+											</p>}
+										>
+											<Input
+											prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
+											size="default"/>
+										</Form.Item>
+										<Form.Item
 											label="Password"
+											name={"password"}
+											rules={[{ required: true, message: 'Please input your password' }]}
 											extra={
 												<a href="#!"
-													 style={{float: "right"}}
+													 style={{ float: 'right' }}
 													 onClick={(ev) => {
-														 ev.preventDefault();
-													 	this.props.history.push("/user/forgot-password")}
+														 ev.preventDefault()
+														 this.props.history.push('/user/forgot-password')
+													 }
 													 }
 													 className="utils__link--blue utils__link--underlined">
-														Forgot password
-													</a>}>
-                      {form.getFieldDecorator('password', {
-                        rules: [{required: true, message: 'Please input your password'}],
-                      })(<Input.Password
-                        prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                        placeholder="Password"/>)}
-                    </Form.Item>
-                    {/*<div className="mb-2">
+													Forgot password
+												</a>}>
+											<Input.Password
+												prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
+												placeholder="Password"/>
+										</Form.Item>
+										{/*<div className="mb-2">
                       <a href="#!" onClick={() => this.props.history.push("/user/forgot-password")} className="utils__link--blue utils__link--underlined">
                         Forgot password
                       </a>
                     </div>*/}
-                    <div className="form-actions">
-                      <Button
-                        type="primary"
-                        className="width-150 mr-4"
-                        htmlType="submit"
-                        loading={loginTracker.status === "loading"}
-                      >
-                        Log In
-                      </Button>
+										<div className="form-actions">
+											<Button
+												type="primary"
+												className="width-150 mr-4"
+												htmlType="submit"
+												loading={loginTracker.status === 'loading'}
+											>
+												Log In
+											</Button>
 
-                      <span className="ml-3 register-link">
+											<span className="ml-3 register-link">
                             {/*Don't have account? {' '}*/}
-                        <a href="#!" onClick={(ev) => {
-                        	ev.preventDefault();
-                        	this.props.history.push('/user/signup')
-                        }}
-                           className="text-primary utils__link--underlined">
+												<a href="#!" onClick={(ev) => {
+													ev.preventDefault()
+													this.props.history.push('/user/signup')
+												}}
+													 className="text-primary utils__link--underlined">
                               Apply Now
                             </a>
                         </span>
-                    </div>
-                  </Form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+										</div>
+									</Form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
 }
 
+
+const ConnectedLogIn = connect(
+	null,
+	mapDispatchToProps
+)(Login);
+
 // export default withRouter(Login);
-const WrappedLogInForm = withRouter(Login);
+const WrappedLogInForm = withRouter(ConnectedLogIn)
 
 
-const entityObject = {};
+const entityObject = {}
 entityObject[Entities.login.name] = {
-  create: true,
-};
+	create: true,
+}
 
 const ConnectedSignInForm = () => (
-  <ActionContainer entityObject={entityObject}>
-    {(props) => <WrappedLogInForm {...props} />}
-  </ActionContainer>
-);
+	<ActionContainer entityObject={entityObject}>
+		{(props) => <WrappedLogInForm {...props} />}
+	</ActionContainer>
+)
 
-export default ConnectedSignInForm;
+export default ConnectedSignInForm

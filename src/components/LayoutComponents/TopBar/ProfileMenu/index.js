@@ -7,7 +7,7 @@ import {withRouter} from "react-router-dom"
 import { Menu, Dropdown, Avatar, Badge, Modal } from 'antd'
 import { FormattedMessage } from 'react-intl'
 import styles from './style.module.scss';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { logoutUser } from '../../../../redux/auth/actions'
 import { logout } from '../../../../utils/Session'
 
@@ -15,22 +15,12 @@ import { logout } from '../../../../utils/Session'
 const { confirm } = Modal;
 
 
-/*const mapStateToProps = state => {
-	console.log('@mapStateToProps', authSelectors.getResetPwdStatus(state))
-	return {
-		resetPwd: authSelectors.getResetPwdStatus(state),
-	}
-}*/
 
-const mapDispatchToProps = dispatch => {
-	return {
-		authActions: bindActionCreators(authActions, dispatch),
-	}
-}
+
 
 
 // @connect(mapStateToProps, mapDispatchToProps)
-@connect(({ user, authReducer }) => ({ user, authReducer }), mapDispatchToProps)
+// @connect(({ user, authReducer }) => ({ user, authReducer }), mapDispatchToProps)
 class ProfileMenu extends React.Component {
   state = {
     count: 7,
@@ -71,7 +61,7 @@ class ProfileMenu extends React.Component {
 	}
 
   render() {
-    const { user, authReducer } = this.props
+    const { authReducer } = this.props
     const { count } = this.state
     const menu = (
       <Menu selectable={false}>
@@ -128,7 +118,7 @@ class ProfileMenu extends React.Component {
     return (
     	<React.Fragment>
 				{
-					authReducer.user &&
+					!!authReducer.user &&
 					<Dropdown
 						overlay={menu}
 						trigger={['click']}
@@ -136,7 +126,7 @@ class ProfileMenu extends React.Component {
 					>
 						<div className={styles.dropdown}>
 							{/*<Badge count={count}>*/}
-							<Avatar className={styles.avatar} shape="square" size="large" icon="user" />
+							<Avatar className={styles.avatar} shape="square" size="large" icon={<UserOutlined/>} />
 							{/*</Badge>*/}
 						</div>
 					</Dropdown>
@@ -147,4 +137,15 @@ class ProfileMenu extends React.Component {
   }
 }
 
-export default withRouter(ProfileMenu)
+
+const mapStateToProps = ({ authReducer }) => ({  authReducer });
+
+const mapDispatchToProps = dispatch => {
+	return {
+		authActions: bindActionCreators(authActions, dispatch),
+	}
+}
+
+const ConnectedProfileMenu = connect(mapStateToProps, mapDispatchToProps)(ProfileMenu);
+
+export default withRouter(ConnectedProfileMenu)

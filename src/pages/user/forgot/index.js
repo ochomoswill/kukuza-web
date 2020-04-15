@@ -11,23 +11,9 @@ import { Entities } from '../../../redux/constants'
 import { withRouter } from 'react-router'
 import ActionContainer from '../../../redux/ActionContainer'
 import CustomAlert from '../../../components/KukuzaComponents/CustomAlert'
+import { MailOutlined } from '@ant-design/icons'
 
 
-const mapStateToProps = state => {
-	console.log('@mapStateToProps', authSelectors.getResetPwdStatus(state))
-	return {
-		resetPwd: authSelectors.getResetPwdStatus(state),
-	}
-}
-
-const mapDispatchToProps = dispatch => {
-	return {
-		authActions: bindActionCreators(authActions, dispatch),
-	}
-}
-
-// @connect(mapStateToProps, mapDispatchToProps)
-@Form.create()
 class ForgotPassword extends Component {
 	state = {
 		messageBar: {
@@ -92,7 +78,7 @@ class ForgotPassword extends Component {
 
 	}
 
-	handleSubmit = e => {
+	/*handleSubmit = e => {
 		// this.resetAlert();
 		e.preventDefault()
 		this.props.form.validateFields((err, values) => {
@@ -115,12 +101,31 @@ class ForgotPassword extends Component {
 
 			}
 		})
+	}*/
+
+	onFinish = values => {
+		console.log('Success:', values);
+
+		const { handleRequest } = this.props
+
+		const reqParams = {
+			getParams: {
+				activePage: this.props.location.pathname,
+				userIdentifier: values.email,
+			},
+		}
+
+		Entities.resetPassword.fnResetPassword(handleRequest, reqParams);
+
+		// this.props.form.resetFields()
 	}
 
-	render() {
-		const { form: { getFieldDecorator } } = this.props
+	onFinishFailed = errorInfo => {
+		console.log('Failed:', errorInfo)
+	}
 
-		const { resetPwd } = this.props
+
+	render() {
 
 		const { resetPasswordTracker, messageBar } = this.state
 
@@ -170,16 +175,21 @@ class ForgotPassword extends Component {
 													showIcon={true}
 												/>
 
-												<Form onSubmit={this.handleSubmit} className="login-form">
-													<Form.Item label={'Email Address'} extra="We'll send password reset link to your email.">
-														{getFieldDecorator('email', {
-															rules: [{ required: true, message: 'Please input your email address!', type: 'email' }],
-														})(
+												<Form
+													layout={"vertical"}
+													onFinish={this.onFinish}
+													onFinishFailed={this.onFinishFailed}
+													className="login-form">
+													<Form.Item
+														label={'Email Address'}
+														name={"email"}
+														rules={[{ required: true, message: 'Please input your email address!', type: 'email' }]}
+														extra="We'll send password reset link to your email."
+													>
 															<Input
-																prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }}/>}
+																prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }}/>}
 																placeholder="Email Address"
-															/>,
-														)}
+															/>
 													</Form.Item>
 													<div className="form-actions">
 														<Button

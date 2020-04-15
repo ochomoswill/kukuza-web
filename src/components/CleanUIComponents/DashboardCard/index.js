@@ -1,6 +1,8 @@
 import React from 'react'
 import style from './style.module.scss'
-import { Button, Icon } from 'antd'
+import { Avatar, Button, Icon } from 'antd'
+
+export const dashboardCardAvatarStyle = { fontSize: 36, color:"#292e71"};
 
 class DashboardCard extends React.Component {
 	static defaultProps = {
@@ -18,7 +20,7 @@ class DashboardCard extends React.Component {
 					{title &&
 					<div className={`text-capitalize ${style.title}`}>
 						<span>{title}</span>
-						{icon && <Icon style={{float: 'right', fontSize: 36, color:"#292e71"}} type={icon}/>}
+						{icon && <Avatar style={{float: 'right', borderRadius: 0, background: "none", width: 36, height: 36}} icon={icon}/>}
 						{fontIcon && <div style={{float: 'right', fontSize: 36, color:"#292e71"}}><i className={fontIcon} /></div>}
 					</div>}
 					{amount && <div className={style.amount}>{amount}</div>}
